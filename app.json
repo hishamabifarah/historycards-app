@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "historycards-app",
+    "name": "History Cards",
     "slug": "historycards-app",
     "platforms": [
       "ios",
@@ -23,6 +23,10 @@
     ],
     "ios": {
       "supportsTablet": true
+    },
+    "android": {
+      "package": "com.hishamabifarah.historycards",
+      "versionCode": 1
     }
   }
 }
