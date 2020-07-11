@@ -5,15 +5,28 @@ import { withNavigation } from 'react-navigation'
 
 const TimelinesLatestList = ({ title, timelines, navigation }) => {
 
+    // const sortTimelinesByRating = (arr) => {
+    //     console.log('sort arr ' , arr);
+    //     return arr.sort((a, b) => (a.ratingAverage < b.ratingAverage) ? 1 : -1)  
+    // };
+
+    
+    // const filterTimelinesLatest = (arr, n) => {
+    //     const newArr = arr.slice(0, n);
+    //     console.log('new arr ' , newArr);
+    //     return newArr;
+    // };
+
+
     if (!timelines.length) {
         return null;
     }
     return (
         <View style={styles.container}>
             <Text style={styles.title}>{title}</Text>
-
             <FlatList
                 numColumns={2}
+                // data={timelines.slice(0, 4)}
                 data={timelines}
                 showsHorizontalScrollIndicator={false}
                 keyExtractor={(timeline) => timeline.timelineId}

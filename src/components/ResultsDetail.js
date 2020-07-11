@@ -24,10 +24,11 @@ const ResultsDetail = ({ result }) => {
 
 const styles = StyleSheet.create({
     container: {
-        marginLeft: 15
+        marginLeft: 5,
+        marginRight: 5
     },
     image: {
-        width: 180,
+        width: (WIDTH / 2 ) - 10,
         height: 120,
         borderRadius: 4,
         marginBottom: 5

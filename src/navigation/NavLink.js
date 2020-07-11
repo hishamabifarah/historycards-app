@@ -6,7 +6,7 @@ import { withNavigation } from 'react-navigation';
 const NavLink = ({navigation, text , routeName}) => {
     return (
         <TouchableOpacity onPress={() => navigation.navigate(routeName)}>
-            <Spacer>
+            <Spacer margin={15}>
                 <Text style={styles.link}>{text}</Text>
             </Spacer>
         </TouchableOpacity>

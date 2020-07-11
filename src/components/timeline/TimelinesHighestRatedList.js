@@ -1,20 +1,25 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity , SafeAreaView } from 'react-native';
 import ResultsDetail from '../ResultsDetail';
 import { withNavigation } from 'react-navigation'
 
 const TimelinesHighestRatedList = ({ title, timelines, navigation }) => {
+
+    // const sortTimelinesByRating = (arr) => {
+    //     console.log('sort arr ' , arr);
+    //     return arr.sort((a, b) => (a.ratingAverage < b.ratingAverage) ? 1 : -1)  
+    // };
 
     if (!timelines.length) {
         return null;
     }
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>{title}</Text>
-
+          
+          <Text style={styles.title}>{title}</Text>
             <FlatList
-                horizontal
-                data={timelines}
+                horizontal = {true}
+                data={timelines.sort((a, b) => (a.ratingAverage < b.ratingAverage) ? 1 : -1)}
                 showsHorizontalScrollIndicator={false}
                 keyExtractor={(timeline) => timeline.timelineId}
                 renderItem={({ item }) => {

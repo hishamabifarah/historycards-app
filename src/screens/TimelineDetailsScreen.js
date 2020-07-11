@@ -19,7 +19,7 @@ const TimelineDetailsScreen = ({ navigation }) => {
     const description = navigation.getParam('description');
     const imageUrl = navigation.getParam('image');
     const id = navigation.getParam('id');
-    const { state, getTimelineCards } = useContext(TimelineContext);
+    const { state, getTimelineCards , clearCards } = useContext(TimelineContext);
 
     // console.log('state Timeline Details: ', state);
 
@@ -51,9 +51,9 @@ const TimelineDetailsScreen = ({ navigation }) => {
 
     return (
         <ScrollView>
-            {/* <NavigationEvents
-                onDidFocus={getTimelineCards}
-            /> */}
+            <NavigationEvents
+                onDidBlur={clearCards}
+            />
             <View>
                 <Block style={styles.timeline}>
                     {image}
@@ -65,11 +65,6 @@ const TimelineDetailsScreen = ({ navigation }) => {
             </View>
 
             <View>
-                {/* <Timeline
-                    data={createTimelineArray(state.cards)}
-                    innerCircle={'dot'}
-                /> */}
-
                 <Text style={styles.title}>Cards</Text>
                 <Timeline
                     style={styles.list}
@@ -98,8 +93,9 @@ const TimelineDetailsScreen = ({ navigation }) => {
                     //     onEndReached: this.onEndReached
                     // }}
                     innerCircle={'dot'}
-                />
+                /> 
             </View>
+      
         </ScrollView>
     )
 };

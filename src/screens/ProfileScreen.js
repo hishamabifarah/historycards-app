@@ -19,6 +19,15 @@ const ProfileScreen = () => {
     )
 };
 
+ProfileScreen.navigationOptions = {
+    title: 'Profile',
+    headerTintColor: '#FFF',
+    headerStyle: {
+      backgroundColor: '#00bcd4'
+    },
+    color: '#000'
+};
+
 const styles = StyleSheet.create({});
 
 export default ProfileScreen;
