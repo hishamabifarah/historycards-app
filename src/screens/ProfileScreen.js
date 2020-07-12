@@ -1,21 +1,21 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { Context as AuthContext } from "../context/authContext";
-import { Text, StyleSheet, Button } from 'react-native';
+import { Text, StyleSheet, Button , View } from 'react-native';
 import { SafeAreaView } from 'react-navigation';
+import NotLoggedIn from '../components/auth/NotLoggedIn';
+import Profile from '../components/auth/Profile';
 
 const ProfileScreen = () => {
 
-    const { signout } = useContext(AuthContext);
+    const { signout , state , tryLocalProfile } = useContext(AuthContext);
+    console.log('state in profile' , state);
 
-    return (
-        <SafeAreaView forceInset={{top: 'always'}}>
-            <Text>Account Screen</Text>
+    useEffect(() => {
+        tryLocalProfile();
+    } ,[])
 
-            <Button
-                title="Sign out"
-                onPress={signout}
-            />
-        </SafeAreaView>
+    return (        
+        state.token ? <Profile /> : <NotLoggedIn />
     )
 };
 

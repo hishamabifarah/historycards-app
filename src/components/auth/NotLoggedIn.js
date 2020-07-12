@@ -1,18 +1,12 @@
 import React from 'react'
 import { Text, StyleSheet, View, Dimensions, TouchableOpacity } from 'react-native';
-import { theme } from '../constants';
-
+import { theme } from '../../constants';
+import { withNavigation } from 'react-navigation';
 const { height: HEIGHT, width: WIDTH } = Dimensions.get('window');
 
-const SplashScreen = ({ navigation }) => {
+const NotLoggedIn = ({ navigation }) => {
     return (
         <View style={styles.container}>
-            <View styles={styles.logoContainer}>
-                <Text style={styles.logo}>History Cards</Text>
-                <Text style={styles.title}>
-                    Where History is never forgotten
-                </Text>
-            </View>
             <View style={styles.buttonsContainer}>
                 <TouchableOpacity onPress={() => { navigation.navigate('Signin') }} style={styles.buttonContainer}>
                     <Text style={styles.buttonText}>LOGIN</Text>
@@ -20,7 +14,7 @@ const SplashScreen = ({ navigation }) => {
                 <TouchableOpacity onPress={() => { navigation.navigate('Signup') }} style={styles.buttonContainer}>
                     <Text style={styles.buttonText}>SIGNUP</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => { navigation.navigate('mainFlow') }} style={styles.buttonContainer}>
+                <TouchableOpacity onPress={() => { navigation.navigate('TimelinesHome') }} style={styles.buttonContainer}>
                     <Text style={styles.buttonText}>HOME</Text>
                 </TouchableOpacity>
             </View>
@@ -34,20 +28,6 @@ const styles = StyleSheet.create({
         backgroundColor: theme.colors.primary,
         justifyContent: 'center',
         alignItems: 'center',
-    },
-    logo: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: '#FFF',
-        textAlign: 'center',
-        marginTop: (HEIGHT / 2) - 120
-    },
-    title: {
-        opacity: 0.9,
-        color: '#FFF',
-        marginTop: 5,
-        fontSize: 18,
-        fontStyle: "italic"
     },
     buttonsContainer: {
         justifyContent: 'flex-end',
@@ -68,4 +48,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default SplashScreen;
+export default withNavigation (NotLoggedIn);
