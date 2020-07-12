@@ -14,7 +14,7 @@ const sortTimelinesByRating = (arr) => {
 
 const filterTimelinesLatest = (arr, n) => {
     const newArr = arr.slice(0, n);
-    console.log('new arr ' , newArr);
+    console.log('new arr ' , newArr );
     return newArr;
 };
 
