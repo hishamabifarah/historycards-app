@@ -9,13 +9,13 @@ const authReducer = (state, action) => {
         case 'signup':
             return { errors: [], token: action.payload, loading: false };
         case 'signin':
-            return { errors: [], token: action.payload , loading: false };
+            return { errors: [], token: action.payload, loading: false };
         case 'signout':
             return { token: null, errors: [], loading: false };
         case 'SET_USER_DETAILS':
-            return { userDetails : action.payload }
+            return { userDetails: action.payload }
         case 'clear_error_messages':
-            return { ...state, errors: [] , loading: false};
+            return { ...state, errors: [], loading: false };
         case 'loading_UI':
             return { ...state, loading: true }
         case 'signup_error':
@@ -29,6 +29,7 @@ const authReducer = (state, action) => {
 
 const signup = (dispatch) => async ({ email, password, confirmPassword, handle }) => {
     Keyboard.dismiss();
+
     dispatch({
         type: 'loading_UI'
     });
@@ -40,7 +41,7 @@ const signup = (dispatch) => async ({ email, password, confirmPassword, handle }
             "confirmPassword": confirmPassword,
             "handle": handle
         };
-        console.log('newUserData: ' , newUserData);
+        console.log('newUserData: ', newUserData);
         const response = await historyCardsApi.post('/signup', newUserData);
         await AsyncStorage.setItem('token', response.data.tokenId);
         dispatch({
@@ -76,7 +77,7 @@ const signin = (dispatch) => async ({ email, password }) => {
             payload: response.data.token
         });
 
-        
+
         navigate('mainFlow');
 
     } catch (err) {
@@ -98,7 +99,7 @@ const signout = dispatch => async () => {
 const tryLocalSignin = dispatch => async () => {
     const token = await AsyncStorage.getItem('token');
     if (token) {
-       // dispatch({ type: 'signin', payload: token });
+        // dispatch({ type: 'signin', payload: token });
         navigate('TimelinesHome');
     } else {
         navigate('loginFlow');
@@ -109,8 +110,6 @@ const tryLocalSignin = dispatch => async () => {
 // likes, notifications..
 
 const getUserData = async (token) => {
-    // const tokenToSet = `Bearer ${token}`;
-    // console.log('token set', tokenToSet);
     try {
         const res = await historyCardsApi.get('/user', {
             headers: {
@@ -120,6 +119,7 @@ const getUserData = async (token) => {
         await AsyncStorage.setItem('handle', res.data.credentials.handle);
 
     } catch (err) {
+        //todo: handle error
         console.log('err get user data', err);
     }
 }
@@ -140,6 +140,7 @@ const tryLocalProfile = (dispatch) => async () => {
         })
 
     } catch (err) {
+        //todo: handle error
         console.log('err', err)
     }
 }
@@ -150,11 +151,11 @@ const clearErrorMessage = dispatch => () => {
 
 export const { Provider, Context } = createDataContext(
     authReducer,
-    { signin, signout, signup, clearErrorMessage, tryLocalSignin , tryLocalProfile },
+    { signin, signout, signup, clearErrorMessage, tryLocalSignin, tryLocalProfile },
     {
         errors: [],
         token: null,
         loading: false,
-        userDetails : []
+        userDetails: []
     }
 );
