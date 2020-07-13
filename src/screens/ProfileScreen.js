@@ -1,33 +1,48 @@
 import React, { useContext, useEffect } from "react";
 import { Context as AuthContext } from "../context/authContext";
-import { Text, StyleSheet, Button , View } from 'react-native';
-import { SafeAreaView } from 'react-navigation';
+import { Text, StyleSheet, Button , View , ScrollView , TouchableOpacity} from 'react-native';
 import NotLoggedIn from '../components/auth/NotLoggedIn';
 import Profile from '../components/auth/Profile';
 
 const ProfileScreen = () => {
 
-    const { signout , state , tryLocalProfile } = useContext(AuthContext);
-    console.log('state in profile' , state);
+    const { state, tryLocalProfile, signout } = useContext(AuthContext);
 
     useEffect(() => {
         tryLocalProfile();
-    } ,[])
+    })
 
-    return (        
-        state.token ? <Profile /> : <NotLoggedIn />
+    return (
+        !state.userDetails ? null :
+            (
+                <ScrollView>
+                    <Profile profile={state.userDetails} />
+                    <TouchableOpacity style={styles.buttonContainer} onPress={signout}>
+                        <Text style={styles.buttonText}>Sign Out</Text>
+                    </TouchableOpacity>
+                </ScrollView>
+            )
     )
 };
 
-ProfileScreen.navigationOptions = {
-    title: 'Profile',
-    headerTintColor: '#FFF',
-    headerStyle: {
-      backgroundColor: '#00bcd4'
+const styles = StyleSheet.create({
+    buttonContainer: {
+        height: 45,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 20,
+        width: 200,
+        borderRadius: 30,
+        backgroundColor: "#3498db",
+        flex: 1,
+        alignItems: 'center',
+        alignSelf: 'center',
+        padding: 12
     },
-    color: '#000'
-};
-
-const styles = StyleSheet.create({});
+    buttonText: {
+        color: '#fff'
+    }
+});
 
 export default ProfileScreen;

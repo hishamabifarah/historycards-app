@@ -4,7 +4,7 @@ import historyCardsApi from '../api/historyCardsApi';
 const timelineReducer = (state, action) => {
     switch (action.type) {
         case 'SET_TIMELINES':
-            console.log('context timelines' , action.payload.timelines);
+          //  console.log('context timelines' , action.payload.timelines);
             if (action.payload.page === 1) {
                 return {
                     ...state,

@@ -4,122 +4,156 @@ import {
     Text,
     View,
     Image,
+    SafeAreaView,
+    TouchableOpacity
 } from 'react-native';
 
-const Profile = () => {
+import Icon from 'react-native-vector-icons/Ionicons';
+import { withNavigation } from 'react-navigation';
+
+const Profile = ({ profile, navigation }) => {
+    if (typeof profile === 'undefined' || profile === null) {
+        return;
+    }
+
     return (
-        <View>
-            <Text>Profile Screen</Text>
-        </View>
-        // <View style={styles.container}>
-        //     <View style={styles.header}>
-        //         <View style={styles.headerContent}>
-        //             <Image style={styles.avatar}
-        //                 source={{ uri: 'https://bootdey.com/img/Content/avatar/avatar6.png' }} />
+        <SafeAreaView >
+            <View style={styles.header}></View>
+            <Image style={styles.avatar} source={{ uri: profile.imageUrl }} />
+            <View style={styles.body}>
+                <View style={styles.bodyContent}>
+                    <Text style={styles.title}>{profile.handle}</Text>
+                    <Text style={styles.info}>{profile.bio}</Text>
 
-        //             <Text style={styles.name}>John Doe </Text>
-        //             <Text style={styles.userInfo}>jhonnydoe@mail.com </Text>
-        //             <Text style={styles.userInfo}>Florida </Text>
-        //         </View>
-        //     </View>
+                    <View style={styles.bodyDetailsContent}>
 
-        //     <View style={styles.body}>
-        //         <View style={styles.item}>
-        //             <View style={styles.iconContent}>
-        //                 <Image style={styles.icon} source={{ uri: 'https://png.icons8.com/home/win8/50/ffffff' }} />
-        //             </View>
-        //             <View style={styles.infoContent}>
-        //                 <Text style={styles.info}>Home</Text>
-        //             </View>
-        //         </View>
+                        {/* Twitter */}
+                        {profile.twitter &&
+                            <View style={styles.content}>
+                                <Icon style={styles.inputIcon} name={'logo-twitter'} size={24} color={'#3498db'} />
+                                <Text style={styles.name}>{profile.twitter}</Text>
+                            </View>
+                        }
 
-        //         <View style={styles.item}>
-        //             <View style={styles.iconContent}>
-        //                 <Image style={styles.icon} source={{ uri: 'https://png.icons8.com/settings/win8/50/ffffff' }} />
-        //             </View>
-        //             <View style={styles.infoContent}>
-        //                 <Text style={styles.info}>Settings</Text>
-        //             </View>
-        //         </View>
+                        {/* Facebook */}
+                        {profile.facebook &&
+                            <View style={styles.content}>
+                                <Icon style={styles.inputIcon} name={'logo-facebook'} size={24} color={'#3498db'} />
+                                <Text style={styles.name}>{profile.facebook}</Text>
+                            </View>
+                        }
 
-        //         <View style={styles.item}>
-        //             <View style={styles.iconContent}>
-        //                 <Image style={styles.icon} source={{ uri: 'https://png.icons8.com/news/win8/50/ffffff' }} />
-        //             </View>
-        //             <View style={styles.infoContent}>
-        //                 <Text style={styles.info}>News</Text>
-        //             </View>
-        //         </View>
+                        {/* Location */}
+                        {profile.location &&
+                            <View style={styles.content}>
+                                <Icon style={styles.inputIcon} name={'md-locate'} size={24} color={'#3498db'} />
+                                <Text style={styles.name}>{profile.location}</Text>
+                            </View>
+                        }
 
-        //         <View style={styles.item}>
-        //             <View style={styles.iconContent}>
-        //                 <Image style={styles.icon} source={{ uri: 'https://png.icons8.com/shopping-basket/ios11/50/ffffff' }} />
-        //             </View>
-        //             <View style={styles.infoContent}>
-        //                 <Text style={styles.info}>Shop</Text>
-        //             </View>
-        //         </View>
+                        {/* Website */}
+                        {profile.website &&
+                            <View style={styles.content}>
+                                <Icon style={styles.inputIcon} name={'md-link'} size={24} color={'#3498db'} />
+                                <Text style={styles.name}>{profile.website}</Text>
+                            </View>
+                        }
+                        {/* Joined Date */}
+                        <View style={styles.content}>
+                            <Icon style={styles.inputIcon} name={'md-calendar'} size={24} color={'#3498db'} />
+                            <Text style={styles.name}>{profile.createdAt}</Text>
+                        </View>
+                    </View>
 
-        //     </View>
-        // </View>
-
+                    <TouchableOpacity
+                        style={styles.buttonContainer}
+                        onPress={() =>
+                            navigation.navigate('ProfileEditDetails',
+                                {
+                                    twitter: profile.twitter,
+                                    facebook: profile.facebook,
+                                    location: profile.location,
+                                    website: profile.website,
+                                    bio: profile.bio
+                                })}>
+                        <Text style={styles.buttonText}>Update Profile</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </SafeAreaView>
     );
 }
 
+
 const styles = StyleSheet.create({
     header: {
-        backgroundColor: "#DCDCDC",
-    },
-    headerContent: {
-        padding: 30,
-        alignItems: 'center',
+        backgroundColor: "#3498db",
+        height: 100,
     },
     avatar: {
-        width: 130,
-        height: 130,
+        width: 120,
+        height: 120,
         borderRadius: 63,
-        borderWidth: 4,
+        borderWidth: 0,
         borderColor: "white",
         marginBottom: 10,
-    },
-    name: {
-        fontSize: 22,
-        color: "#000000",
-        fontWeight: '600',
-    },
-    userInfo: {
-        fontSize: 16,
-        color: "#778899",
-        fontWeight: '600',
+        alignSelf: 'center',
+        position: 'absolute',
+        marginTop: 30
     },
     body: {
-        backgroundColor: "#778899",
-        height: 500,
+        marginTop: 40,
+    },
+    bodyContent: {
+        flex: 1,
         alignItems: 'center',
+        padding: 30,
     },
-    item: {
-        flexDirection: 'row',
-    },
-    infoContent: {
+    bodyDetailsContent: {
         flex: 1,
         alignItems: 'flex-start',
-        paddingLeft: 5
+        padding: 10,
     },
-    iconContent: {
-        flex: 1,
-        alignItems: 'flex-end',
-        paddingRight: 5,
+    content: {
+        flexDirection: 'row',
+        marginVertical: 8
     },
-    icon: {
-        width: 30,
-        height: 30,
-        marginTop: 20,
+    name: {
+        fontSize: 18,
+        color: "#696969",
+        fontWeight: "600",
+        marginLeft: 20
+    },
+    title: {
+        fontSize: 24,
+        color: "#696969",
+        fontWeight: "600",
     },
     info: {
-        fontSize: 18,
-        marginTop: 20,
-        color: "#FFFFFF",
+        fontSize: 16,
+        color: "#3498db",
+        marginTop: 10,
+        fontWeight: "600",
+    },
+    description: {
+        fontSize: 16,
+        color: "#696969",
+        marginTop: 10,
+        textAlign: 'center'
+    },
+    buttonContainer: {
+        marginTop: 10,
+        height: 45,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 200,
+        borderRadius: 30,
+        backgroundColor: "#3498db"
+    },
+    buttonText: {
+        color: '#fff'
     }
 });
 
-export default Profile;
+export default withNavigation(Profile);

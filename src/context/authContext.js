@@ -13,7 +13,7 @@ const authReducer = (state, action) => {
         case 'signout':
             return { token: null, errors: [], loading: false };
         case 'SET_USER_DETAILS':
-            return { userDetails: action.payload }
+            return { userDetails: action.payload.user };
         case 'clear_error_messages':
             return { ...state, errors: [], loading: false };
         case 'loading_UI':
@@ -77,7 +77,6 @@ const signin = (dispatch) => async ({ email, password }) => {
             payload: response.data.token
         });
 
-
         navigate('mainFlow');
 
     } catch (err) {
@@ -89,20 +88,58 @@ const signin = (dispatch) => async ({ email, password }) => {
     }
 };
 
+const updateUserDetails = (dispatch) => async ({ facebook, twitter , website , location , bio }) => {
+   
+    Keyboard.dismiss();
+    const token = await AsyncStorage.getItem('token');
+
+    const newUserData = {
+        "facebook": facebook ? facebook: '',
+        "twitter": twitter ? twitter: '',
+        "website": website ? website: '',
+        "location": location ? location: '',
+        "bio" : bio ? bio: '',
+    };
+    
+    // console.log('res data' , newUserData);
+    // dispatch({
+    //     type: 'loading_UI'
+    // });
+
+    try {
+        await historyCardsApi.post('/user', newUserData , {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        getUserData(token);
+        navigate('Profile');
+
+    } catch (err) {
+        console.log('err: ', err);
+        
+        // dispatch({
+        //     type: 'signin_error',
+        //     payload: err.response.data
+        // });
+    }
+};
+
 const signout = dispatch => async () => {
     await AsyncStorage.removeItem('token');
     dispatch({ type: 'signout' });
     // navigate('loginFlow');
-    navigate('SplashScreen');
+    navigate('Splash');
 };
 
-const tryLocalSignin = dispatch => async () => {
+const tryLocalSignin = () => async () => {
     const token = await AsyncStorage.getItem('token');
     if (token) {
         // dispatch({ type: 'signin', payload: token });
         navigate('TimelinesHome');
     } else {
-        navigate('loginFlow');
+        navigate('Splash');
     }
 };
 
@@ -125,23 +162,27 @@ const getUserData = async (token) => {
 }
 
 const tryLocalProfile = (dispatch) => async () => {
-    try {
-        const handle = await AsyncStorage.getItem('handle')
-        const token = await AsyncStorage.getItem('token');
 
-        const response = await historyCardsApi.get(`/user/${handle}`, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        })
-        dispatch({
-            type: 'SET_USER_DETAILS',
-            payload: response.data.user
-        })
+    const token = await AsyncStorage.getItem('token');
+    if (!token) {
+        navigate('Splash');
+    } else {
+        try {
+            const handle = await AsyncStorage.getItem('handle');
+            const response = await historyCardsApi.get(`/user/${handle}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+            dispatch({
+                type: 'SET_USER_DETAILS',
+                payload: response.data
+            })
 
-    } catch (err) {
-        //todo: handle error
-        console.log('err', err)
+        } catch (err) {
+            //todo: handle error
+            console.log('err', err)
+        }
     }
 }
 
@@ -151,11 +192,11 @@ const clearErrorMessage = dispatch => () => {
 
 export const { Provider, Context } = createDataContext(
     authReducer,
-    { signin, signout, signup, clearErrorMessage, tryLocalSignin, tryLocalProfile },
+    { signin, signout, signup, clearErrorMessage, tryLocalSignin, tryLocalProfile , updateUserDetails },
     {
         errors: [],
         token: null,
         loading: false,
-        userDetails: []
+        userDetails: {}
     }
 );

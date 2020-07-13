@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react'
-import { StyleSheet, ScrollView, Text , View } from 'react-native';
+import { StyleSheet, ScrollView, Text , View , SafeAreaView } from 'react-native';
 import { Context as TimelineContext } from "../context/timelinesContext";
 import TimelinesFavoritesList from '../components/timeline/TimelinesFavoritesList';
 
@@ -16,9 +16,11 @@ const TimelineFavoritesScreen = () => {
         state.loading
             ? <Text>loading</Text>
             : (
+ 
                 <ScrollView>
                     <TimelinesFavoritesList timelines={state.favorites}/>
                 </ScrollView>
+      
             )
     )
 };

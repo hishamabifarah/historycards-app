@@ -7,7 +7,7 @@ const TimelinesFavoritesList = ({ timelines }) => {
         return null;
     }
     return (
-        <SafeAreaView>
+        <View>
             <FlatList
                 data={timelines}
                 showsHorizontalScrollIndicator={false}
@@ -18,7 +18,7 @@ const TimelinesFavoritesList = ({ timelines }) => {
                     )
                 }}
             />
-        </SafeAreaView>
+        </View>
     )
 };
 

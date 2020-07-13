@@ -16,6 +16,7 @@ import TimelineDetailsScreen from './src/screens/TimelineDetailsScreen';
 import TimelineFavoritesScreen from './src/screens/TimelineFavoritesScreen';
 import TimelineListAllScreen from './src/screens/TimelineListAllScreen';
 import ResolveAuthScreen from './src/screens/ResolveAuthScreen';
+import ProfileEditDetailsScreen from './src/screens/ProfileEditDetailsScreen';
 
 // CONTEXT
 import { Provider as AuthProvider } from './src/context/authContext';
@@ -31,10 +32,9 @@ import { Ionicons } from '@expo/vector-icons';
 import { AppLoading } from 'expo';
 import { useFonts } from '@use-expo/font';
 
-
 const switchNavigator = createSwitchNavigator({
-  Splash: SplashScreen,
   ResolveAuth: ResolveAuthScreen,
+  Splash: SplashScreen,
   loginFlow: createStackNavigator({
     Signin: SigninScreen,
     Signup: SignupScreen,
@@ -50,6 +50,12 @@ const switchNavigator = createSwitchNavigator({
         screen: TimelineListAllScreen,
         navigationOptions:{
           title: 'Timelines'
+        }
+      },
+      ProfileEditDetails : {
+        screen: ProfileEditDetailsScreen,
+        navigationOptions:{
+          title: 'Edit Profile'
         }
       }
     },{

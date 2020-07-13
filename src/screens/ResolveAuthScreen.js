@@ -10,8 +10,8 @@ const ResolveAuthScreen = () => {
         tryLocalSignin();
     }, []);
 
-    // return null;
-    return <SplashScreen/>
+     return null;
+    // return <SplashScreen/>
 
 };
 

@@ -6,7 +6,7 @@ import Spacer from '../elements/Spacer';
 const TimelineListAllScreen = () => {
 
     const { state, getTimelines } = useContext(TimelineContext);
-    console.log('state favorites' , state);
+    // console.log('state favorites' , state);
     useEffect(() => {
         getTimelines(1);
     },[])
