@@ -47,9 +47,17 @@ const ProfileEditDetailsScreen = ({ navigation }) => {
                 numberOfLines={4}
                 onChangeText={(text) => setBio(text)} />
 
-            <Button
+            <TouchableOpacity
+                style={styles.buttonContainer}
                 onPress={() => updateUserDetails({ facebook, twitter, website, location, bio })}
-                title="Save Details" />
+                disabled={state.loading}>
+                <Text style={styles.buttonText}>Save Details</Text>
+            </TouchableOpacity>
+
+            {/* <Button
+                onPress={() => updateUserDetails({ facebook, twitter, website, location, bio })}
+                disabled = {state.loading}
+                title="Save Details" /> */}
         </ScrollView>
     )
 };
@@ -73,9 +81,26 @@ const styles = StyleSheet.create({
     },
 
     label: {
-        fontSize: 20,
-        marginBottom: 5,
-        marginLeft: 5
+        fontSize: 18,
+        marginBottom: 4,
+        marginLeft: 4
+    },
+    buttonContainer: {
+        height: 45,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 20,
+        width: 200,
+        borderRadius: 30,
+        backgroundColor: "#3498db",
+        flex: 1,
+        alignItems: 'center',
+        alignSelf: 'center',
+        padding: 12
+    },
+    buttonText: {
+        color: '#fff'
     }
 })
 

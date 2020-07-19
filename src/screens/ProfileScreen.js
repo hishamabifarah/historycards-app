@@ -10,7 +10,7 @@ const ProfileScreen = () => {
 
     useEffect(() => {
         tryLocalProfile();
-    })
+    }, [])
 
     return (
         !state.userDetails ? null :

@@ -4,8 +4,9 @@ import { Context as TimelineContext } from "../context/timelinesContext";
 import TimelinesHighestRatedList from '../components/timeline/TimelinesHighestRatedList';
 import TimelinesLatestList from '../components/timeline/TimelinesLatestList';
 import Divider from '../elements/Divider';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import Spacer from '../elements/Spacer';
+import TimelineAdd from '../components/timeline/TimelineAdd';
+import Notifications from '../components/Notifications';
 
 const sortTimelinesByRating = (arr) => {
     console.log('sort arr ' , arr);
@@ -19,7 +20,7 @@ const filterTimelinesLatest = (arr, n) => {
 };
 
 
-const TimelinesHomeScreen = ({navigation}) => {
+const TimelinesHomeScreen = ({ navigation }) => {
 
     const { state, getTimelines } = useContext(TimelineContext);
 
@@ -28,7 +29,6 @@ const TimelinesHomeScreen = ({navigation}) => {
     }, []);
 
     return (
-        
         state.loading
             ? <Text>loading</Text>
             : (
@@ -63,7 +63,7 @@ const TimelinesHomeScreen = ({navigation}) => {
     )
 };
 
-TimelinesHomeScreen.navigationOptions = {
+TimelinesHomeScreen.navigationOptions = ({ navigation }) => ({
     title: 'History Cards',
     headerTintColor: '#FFF',
     headerStyle: {
@@ -72,22 +72,11 @@ TimelinesHomeScreen.navigationOptions = {
     color: '#000',
     headerRight: () => (
         <View style={styles.icons}>
-            <Icon
-                onPress={() => console.log('notifications')}
-                name={'notifications'}
-                size={26}
-                color="#fff"
-            />
-            <Icon
-            style={{marginLeft: 5}}
-                name={'add'}
-                size={26}
-                color="#fff"
-                onPress={() => console.log('add')}
-            />
+            <Notifications/>
+            <TimelineAdd />
         </View>
     ),
-};
+});
 
 const styles = StyleSheet.create({
     container: {

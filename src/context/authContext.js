@@ -9,7 +9,7 @@ const authReducer = (state, action) => {
         case 'signup':
             return { errors: [], token: action.payload, loading: false };
         case 'signin':
-            return { errors: [], token: action.payload, loading: false };
+            return { errors: [], token: action.payload, loading: false , authenticated : true};
         case 'signout':
             return { token: null, errors: [], loading: false };
         case 'SET_USER_DETAILS':
@@ -18,10 +18,16 @@ const authReducer = (state, action) => {
             return { ...state, errors: [], loading: false };
         case 'loading_UI':
             return { ...state, loading: true }
+        case 'stop_loading_UI':
+            return { ...state, loading: false }
         case 'signup_error':
             return { ...state, errors: action.payload, loading: false };
         case 'signin_error':
             return { ...state, errors: action.payload, loading: false };
+        case 'set_authenticated':
+            return {...state, authenticated: true }
+        case 'set_user':
+            return { notifications: action.payload.notifications}
         default:
             return state;
     }
@@ -41,9 +47,11 @@ const signup = (dispatch) => async ({ email, password, confirmPassword, handle }
             "confirmPassword": confirmPassword,
             "handle": handle
         };
+        
         console.log('newUserData: ', newUserData);
         const response = await historyCardsApi.post('/signup', newUserData);
         await AsyncStorage.setItem('token', response.data.tokenId);
+       
         dispatch({
             type: 'signup',
             payload: response.data.tokenId
@@ -89,8 +97,11 @@ const signin = (dispatch) => async ({ email, password }) => {
 };
 
 const updateUserDetails = (dispatch) => async ({ facebook, twitter , website , location , bio }) => {
-   
+    
     Keyboard.dismiss();
+
+    dispatch({ type: 'loading_UI' });
+
     const token = await AsyncStorage.getItem('token');
 
     const newUserData = {
@@ -100,12 +111,9 @@ const updateUserDetails = (dispatch) => async ({ facebook, twitter , website , l
         "location": location ? location: '',
         "bio" : bio ? bio: '',
     };
-    
-    // console.log('res data' , newUserData);
-    // dispatch({
-    //     type: 'loading_UI'
-    // });
 
+    console.log('upading user details with ' , JSON.stringify(newUserData));
+    
     try {
         await historyCardsApi.post('/user', newUserData , {
             headers: {
@@ -114,29 +122,50 @@ const updateUserDetails = (dispatch) => async ({ facebook, twitter , website , l
         });
 
         getUserData(token);
+        dispatch({ type: 'stop_loading_UI' });
         navigate('Profile');
 
     } catch (err) {
         console.log('err: ', err);
-        
-        // dispatch({
-        //     type: 'signin_error',
-        //     payload: err.response.data
-        // });
+        if(err === 'Error: Request failed with status code 403'){
+            console.log('error 403');
+        }
+        dispatch({ type: 'stop_loading_UI' });
     }
 };
 
 const signout = dispatch => async () => {
     await AsyncStorage.removeItem('token');
     dispatch({ type: 'signout' });
-    // navigate('loginFlow');
     navigate('Splash');
 };
 
-const tryLocalSignin = () => async () => {
+const tryLocalSignin = (dispatch) => async () => {
+    console.log('tryLocalSigin()');
     const token = await AsyncStorage.getItem('token');
     if (token) {
-        // dispatch({ type: 'signin', payload: token });
+        // copied  getUserData() here because couldn't get getUserData() to be called with dispatch 
+        try {
+            const res = await historyCardsApi.get('/user', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+    
+            // console.log('get user data' , res.data);
+    
+            await AsyncStorage.setItem('handle', res.data.credentials.handle);
+    
+            dispatch({
+                type: 'set_user',
+                payload: res.data
+            });
+        } catch (err) {
+            //todo: handle error
+            console.log('err get user data', err);
+        }
+
+        dispatch({ type: 'set_authenticated' });
         navigate('TimelinesHome');
     } else {
         navigate('Splash');
@@ -146,15 +175,24 @@ const tryLocalSignin = () => async () => {
 // get user data when he first signs in or signs up
 // likes, notifications..
 
-const getUserData = async (token) => {
+const getUserData =  async (token) => {
+    console.log('getting user data' , token);
+
     try {
         const res = await historyCardsApi.get('/user', {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
         });
+
+        console.log('get user data' , res.data);
+
         await AsyncStorage.setItem('handle', res.data.credentials.handle);
 
+        dispatch({
+            type: 'set_user',
+            payload: res.data
+        })
     } catch (err) {
         //todo: handle error
         console.log('err get user data', err);
@@ -197,6 +235,9 @@ export const { Provider, Context } = createDataContext(
         errors: [],
         token: null,
         loading: false,
-        userDetails: {}
+        userDetails: {},
+        authenticated: false,
+        likes : [],
+        notifications: []
     }
 );

@@ -1,10 +1,14 @@
 import createDataContext from '../context/createDataContext';
 import historyCardsApi from '../api/historyCardsApi';
+import { AsyncStorage } from 'react-native';
+import { navigate } from '../navigation/navigationRef';
 
 const timelineReducer = (state, action) => {
     switch (action.type) {
+        case 'LOADING_DATA_UI':
+            return { ...state, loading: true }
         case 'SET_TIMELINES':
-          //  console.log('context timelines' , action.payload.timelines);
+            //  console.log('context timelines' , action.payload.timelines);
             if (action.payload.page === 1) {
                 return {
                     ...state,
@@ -16,7 +20,7 @@ const timelineReducer = (state, action) => {
             } else {
                 return {
                     ...state,
-                    timelines: [ ...action.payload.timelines , ...state.timelines ],
+                    timelines: [...action.payload.timelines, ...state.timelines],
                     pageCount: action.payload.pageCount,
                     page: action.payload.page,
                     loading: false
@@ -30,12 +34,29 @@ const timelineReducer = (state, action) => {
                 loading: false
             };
 
+        case 'POST_TIMELINE': {
+            return {
+                ...state,
+                timelines: [action.payload, ...state.timelines],
+                loading: false
+            };
+        }
+
         case 'SET_FAVORITES':
             return {
                 ...state,
                 favorites: action.payload,
                 loading: false
             };
+
+        case 'UPLOAD_IMAGE_TIMELINE':
+            let indexUpdateImage = state.timelines.findIndex((timeline) => timeline.timelineId === action.payload.timelineId);
+
+            state.timelines[indexUpdateImage].imageUrl = action.payload.image
+
+            return {
+                ...state
+            }
 
         case 'CLEAR_TIMELINE_CARDS':
             return { cards: [] };
@@ -87,13 +108,91 @@ const getTimelineCards = dispatch => async (id) => {
     }
 }
 
+const addNewTimeline = dispatch => async ({ title, description }) => {
+    dispatch({ type: 'LOADING_DATA_UI' })
+    const token = await AsyncStorage.getItem('token');
+
+    const newTimeline = {
+        "title": title,
+        "description": description,
+        "imageUrl": ''
+    };
+
+    try {
+        const response = await historyCardsApi.post('/timeline', newTimeline, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        dispatch({
+            type: 'POST_TIMELINE',
+            payload: response.data.resTimeline
+        })
+
+        navigate('TimelineAddImage', {
+            title: response.data.resTimeline.title,
+            description: response.data.resTimeline.description,
+            id: response.data.resTimeline.id
+        });
+
+    } catch (err) {
+        console.log('err adding new timeline ', err);
+    }
+}
+
+const uploadImageTimeline = dispatch => async ({ timelineId, image }) => {
+    dispatch({ type: 'LOADING_DATA_UI' })
+    const token = await AsyncStorage.getItem('token');
+
+    const formData = new FormData();
+    formData.append("detectImg", {
+        uri: image.uri,
+        name: "image",
+        type: "image/jpg",
+    });
+
+
+    formData.append('image', image, 'name');
+
+    try {
+        // const response = await historyCardsApi.post(`/timeline/${timelineId}/image`, formData, {
+        //     headers: {
+        //         'Authorization': `Bearer ${token}`
+        //     }
+        // });
+
+        const response = await fetch(`/timeline/${timelineId}/image`, {
+            method: "POST",
+            headers: {
+                 "Content-Type": "multipart/form-data",
+            },
+            body: formData,
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+    
+
+        dispatch({
+            type: 'UPLOAD_IMAGE_TIMELINE',
+            payload: response.data.resTimeline
+        })
+
+        navigate('TimelinesHome')
+
+    } catch (err) {
+        console.log('err adding new timeline ', err);
+    }
+}
+
 const clearCards = (dispatch) => () => {
     dispatch({ type: 'CLEAR_TIMELINE_CARDS' })
 }
 
 export const { Provider, Context } = createDataContext(
     timelineReducer,
-    { getTimelines, getTimelineCards, getTimelineFavorites, clearCards },
+    { getTimelines, getTimelineCards, getTimelineFavorites, clearCards, addNewTimeline, uploadImageTimeline },
     {
         errors: [],
         loading: true,

@@ -17,7 +17,8 @@ import TimelineFavoritesScreen from './src/screens/TimelineFavoritesScreen';
 import TimelineListAllScreen from './src/screens/TimelineListAllScreen';
 import ResolveAuthScreen from './src/screens/ResolveAuthScreen';
 import ProfileEditDetailsScreen from './src/screens/ProfileEditDetailsScreen';
-
+import TimelineAddImageScreen from './src/screens/TimelineAddImageScreen';
+import NotificationsScreen from './src/screens/NotificationsScreen';
 // CONTEXT
 import { Provider as AuthProvider } from './src/context/authContext';
 import { Provider as TimelineProvider } from './src/context/timelinesContext';
@@ -35,6 +36,7 @@ import { useFonts } from '@use-expo/font';
 const switchNavigator = createSwitchNavigator({
   ResolveAuth: ResolveAuthScreen,
   Splash: SplashScreen,
+  
   loginFlow: createStackNavigator({
     Signin: SigninScreen,
     Signup: SignupScreen,
@@ -45,7 +47,19 @@ const switchNavigator = createSwitchNavigator({
       TimelinesHome:TimelinesHomeScreen,
       TimelineDetail: TimelineDetailsScreen,
       TimelineEdit: TimelineEditScreen,
-      TimelineCreate: TimelineCreateScreen,
+      Notifications: NotificationsScreen,
+      TimelineCreate: {
+        screen: TimelineCreateScreen,
+        navigationOptions:{
+          title: 'New Timeline'
+        }
+      },
+      TimelineAddImage: {
+        screen: TimelineAddImageScreen,
+        navigationOptions:{
+          title: 'New Timeline Image'
+        }
+      },
       TimelineListAll: {
         screen: TimelineListAllScreen,
         navigationOptions:{
