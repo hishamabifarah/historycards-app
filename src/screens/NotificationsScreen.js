@@ -1,22 +1,24 @@
-import React, { useContext, useEffect } from "react";
-import { FlatList,  StyleSheet, Text, View, Alert } from 'react-native';  
+import React, { useContext } from "react";
+import { FlatList,  StyleSheet, View } from 'react-native';  
+import { Context as AuthContext } from "../context/authContext";
+import NotificationsList from '../components/notifications/NotificationsList';
+
 const NotificationsScreen = () => {
+
+    const { state } = useContext(AuthContext);
+    // console.log('state in notif screen', state);
 
      return (
         <View style={styles.container}>  
         <FlatList  
-            data={[  
-                {key: 'Android'},  
-                {key: 'Php'},
-                {key: 'Python'},
-                {key: 'Ruby'},
-                {key: 'Perl'},  
-                {key: 'Ajax'},
-                {key: 'Rails'} 
-            ]}  
-            renderItem={({item}) =>  
-                <Text style={styles.item}>
-                      {item.key}</Text>}  
+            data={state.notifications}
+            showsHorizontalScrollIndicator={false}
+            keyExtractor={(notification) => notification.createdAt}
+            renderItem={({ item }) => {
+                return (
+                    <NotificationsList result={item} />
+                )
+            }}
         />  
     </View>  
      )

@@ -1,12 +1,13 @@
 import React, { useContext, useEffect } from 'react'
-import { StyleSheet, ScrollView, Text, View , TouchableOpacity } from 'react-native';
+import { StyleSheet, ScrollView, Text, View , TouchableOpacity , ActivityIndicator } from 'react-native';
 import { Context as TimelineContext } from "../context/timelinesContext";
 import TimelinesHighestRatedList from '../components/timeline/TimelinesHighestRatedList';
 import TimelinesLatestList from '../components/timeline/TimelinesLatestList';
 import Divider from '../elements/Divider';
 import Spacer from '../elements/Spacer';
 import TimelineAdd from '../components/timeline/TimelineAdd';
-import Notifications from '../components/Notifications';
+import Notifications from '../components/notifications/Notifications';
+import RecentActivitiesList from '../components/activities/RecentActivitiesList';
 
 const sortTimelinesByRating = (arr) => {
     console.log('sort arr ' , arr);
@@ -22,15 +23,16 @@ const filterTimelinesLatest = (arr, n) => {
 
 const TimelinesHomeScreen = ({ navigation }) => {
 
-    const { state, getTimelines } = useContext(TimelineContext);
+    const { state, getTimelines , getRecentActivities} = useContext(TimelineContext);
 
     useEffect(() => {
         getTimelines(1);
+        getRecentActivities();
     }, []);
 
     return (
         state.loading
-            ? <Text>loading</Text>
+            ? <ActivityIndicator style={{ paddingTop: 15 }} size="large" color="#00bcd4" />
             : (
                 <ScrollView>
                     <TimelinesLatestList
@@ -56,14 +58,17 @@ const TimelinesHomeScreen = ({ navigation }) => {
 
                     <Divider margin={[15 * 0.9, 0]} />
 
-                    <Text> Recent Activities </Text>
+                    <RecentActivitiesList
+                        activities={state.activities}
+                        title="Recent Activities"
+                    />
 
                 </ScrollView>
             )
     )
 };
 
-TimelinesHomeScreen.navigationOptions = ({ navigation }) => ({
+TimelinesHomeScreen.navigationOptions = () => ({
     title: 'History Cards',
     headerTintColor: '#FFF',
     headerStyle: {

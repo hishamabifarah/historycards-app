@@ -9,7 +9,7 @@ const authReducer = (state, action) => {
         case 'signup':
             return { errors: [], token: action.payload, loading: false };
         case 'signin':
-            return { errors: [], token: action.payload, loading: false , authenticated : true};
+            return { errors: [], token: action.payload, loading: false, authenticated: true };
         case 'signout':
             return { token: null, errors: [], loading: false };
         case 'SET_USER_DETAILS':
@@ -25,9 +25,9 @@ const authReducer = (state, action) => {
         case 'signin_error':
             return { ...state, errors: action.payload, loading: false };
         case 'set_authenticated':
-            return {...state, authenticated: true }
+            return { ...state, authenticated: true }
         case 'set_user':
-            return { notifications: action.payload.notifications}
+            return { notifications: action.payload.notifications }
         default:
             return state;
     }
@@ -47,11 +47,11 @@ const signup = (dispatch) => async ({ email, password, confirmPassword, handle }
             "confirmPassword": confirmPassword,
             "handle": handle
         };
-        
+
         console.log('newUserData: ', newUserData);
         const response = await historyCardsApi.post('/signup', newUserData);
         await AsyncStorage.setItem('token', response.data.tokenId);
-       
+
         dispatch({
             type: 'signup',
             payload: response.data.tokenId
@@ -78,12 +78,31 @@ const signin = (dispatch) => async ({ email, password }) => {
         const response = await historyCardsApi.post('/login', { email, password })
         await AsyncStorage.setItem('token', response.data.token);
 
-        getUserData(response.data.token);
-
         dispatch({
             type: 'signin',
             payload: response.data.token
         });
+
+        console.log('getting user data in signin ()');
+        // getUserData(response.data.token);
+        try {
+            const res = await historyCardsApi.get('/user', {
+                headers: {
+                    'Authorization': `Bearer ${response.data.token}`
+                }
+            });
+
+            await AsyncStorage.setItem('handle', res.data.credentials.handle);
+
+            dispatch({
+                type: 'set_user',
+                payload: res.data
+            });
+
+        } catch (err) {
+            //todo: handle error
+            console.log('err get user data', err);
+        }
 
         navigate('mainFlow');
 
@@ -96,8 +115,8 @@ const signin = (dispatch) => async ({ email, password }) => {
     }
 };
 
-const updateUserDetails = (dispatch) => async ({ facebook, twitter , website , location , bio }) => {
-    
+const updateUserDetails = (dispatch) => async ({ facebook, twitter, website, location, bio }) => {
+
     Keyboard.dismiss();
 
     dispatch({ type: 'loading_UI' });
@@ -105,17 +124,17 @@ const updateUserDetails = (dispatch) => async ({ facebook, twitter , website , l
     const token = await AsyncStorage.getItem('token');
 
     const newUserData = {
-        "facebook": facebook ? facebook: '',
-        "twitter": twitter ? twitter: '',
-        "website": website ? website: '',
-        "location": location ? location: '',
-        "bio" : bio ? bio: '',
+        "facebook": facebook ? facebook : '',
+        "twitter": twitter ? twitter : '',
+        "website": website ? website : '',
+        "location": location ? location : '',
+        "bio": bio ? bio : '',
     };
 
-    console.log('upading user details with ' , JSON.stringify(newUserData));
-    
+    console.log('upading user details with ', JSON.stringify(newUserData));
+
     try {
-        await historyCardsApi.post('/user', newUserData , {
+        await historyCardsApi.post('/user', newUserData, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -127,7 +146,7 @@ const updateUserDetails = (dispatch) => async ({ facebook, twitter , website , l
 
     } catch (err) {
         console.log('err: ', err);
-        if(err === 'Error: Request failed with status code 403'){
+        if (err === 'Error: Request failed with status code 403') {
             console.log('error 403');
         }
         dispatch({ type: 'stop_loading_UI' });
@@ -141,30 +160,32 @@ const signout = dispatch => async () => {
 };
 
 const tryLocalSignin = (dispatch) => async () => {
-    console.log('tryLocalSigin()');
+
     const token = await AsyncStorage.getItem('token');
     if (token) {
         // copied  getUserData() here because couldn't get getUserData() to be called with dispatch 
+        console.log('getting user data in tryLocalSignin()');
         try {
             const res = await historyCardsApi.get('/user', {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
-    
+
             // console.log('get user data' , res.data);
-    
+
             await AsyncStorage.setItem('handle', res.data.credentials.handle);
-    
+
             dispatch({
                 type: 'set_user',
                 payload: res.data
             });
+
         } catch (err) {
             //todo: handle error
             console.log('err get user data', err);
         }
-
+   
         dispatch({ type: 'set_authenticated' });
         navigate('TimelinesHome');
     } else {
@@ -172,11 +193,12 @@ const tryLocalSignin = (dispatch) => async () => {
     }
 };
 
-// get user data when he first signs in or signs up
+// get user data when he first signs in or signs up or enters app
 // likes, notifications..
 
-const getUserData =  async (token) => {
-    console.log('getting user data' , token);
+// const getUserData = (dispatch) => async (token) =>  { // doesn't work with dispatch(getUserData()) or getUserData()
+const getUserData = async (token) => {
+    console.log('getting user data', token);
 
     try {
         const res = await historyCardsApi.get('/user', {
@@ -185,7 +207,7 @@ const getUserData =  async (token) => {
             }
         });
 
-        console.log('get user data' , res.data);
+        console.log('get user data', res.data);
 
         await AsyncStorage.setItem('handle', res.data.credentials.handle);
 
@@ -195,7 +217,7 @@ const getUserData =  async (token) => {
         })
     } catch (err) {
         //todo: handle error
-        console.log('err get user data', err);
+        console.log('getUserData() err ', err);
     }
 }
 
@@ -230,14 +252,14 @@ const clearErrorMessage = dispatch => () => {
 
 export const { Provider, Context } = createDataContext(
     authReducer,
-    { signin, signout, signup, clearErrorMessage, tryLocalSignin, tryLocalProfile , updateUserDetails },
+    { signin, signout, signup, clearErrorMessage, tryLocalSignin, tryLocalProfile, updateUserDetails },
     {
         errors: [],
         token: null,
         loading: false,
         userDetails: {},
         authenticated: false,
-        likes : [],
+        likes: [],
         notifications: []
     }
 );

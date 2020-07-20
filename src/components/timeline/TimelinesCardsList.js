@@ -12,7 +12,6 @@ const TimelinesCardsList = ({ result }) => {
 
     const userAvar = result.userImage
 
-
     const image = result.imageUrl
 
     const renderIfImage = result.imageUrl 

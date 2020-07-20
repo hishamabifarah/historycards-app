@@ -9,10 +9,10 @@ const TimelineAdd = ({ navigation }) => {
     if (state.authenticated) {
         return (
             <Icon
-                 style={{marginLeft: 10}}
+                style={{marginLeft: 10}}
                 name={'add'}
                 size={26}
-                onPress={() => navigation.navigate('TimelineAddImage')}
+                onPress={() => navigation.navigate('TimelineCreate')}
                 color="#fff" />
         )
     } else

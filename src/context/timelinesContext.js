@@ -56,7 +56,13 @@ const timelineReducer = (state, action) => {
 
             return {
                 ...state
-            }
+            };
+        case 'SET_ACTIVITIES':
+                return {
+                    ...state,
+                    activities: action.payload,
+                    loading: false
+                }
 
         case 'CLEAR_TIMELINE_CARDS':
             return { cards: [] };
@@ -79,6 +85,19 @@ const getTimelines = (dispatch) => async (page) => {
     } catch (err) {
         // handle state with errors
         console.log('error getting timelines: ', err)
+    }
+};
+
+const getRecentActivities = (dispatch) => async () => {
+    try {
+        const response = await historyCardsApi.get('/activity')
+        dispatch({
+            type: 'SET_ACTIVITIES',
+            payload: response.data
+        })
+    } catch (err) {
+        // handle state with errors
+        console.log('error getting activity: ', err)
     }
 };
 
@@ -192,12 +211,16 @@ const clearCards = (dispatch) => () => {
 
 export const { Provider, Context } = createDataContext(
     timelineReducer,
-    { getTimelines, getTimelineCards, getTimelineFavorites, clearCards, addNewTimeline, uploadImageTimeline },
+    { 
+        getTimelines, getTimelineCards, getTimelineFavorites, clearCards, 
+        addNewTimeline, uploadImageTimeline, getRecentActivities
+    },
     {
         errors: [],
         loading: true,
         timelines: [],
         favorites: [],
-        cards: []
+        cards: [],
+        activities : []
     }
 );
