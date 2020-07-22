@@ -34,6 +34,14 @@ const timelineReducer = (state, action) => {
                 loading: false
             };
 
+        case 'SET_TIMELINE_DETAILS':
+            return {
+                ...state,
+                timeline: action.payload.timeline,
+                cards: action.payload,
+                loading: false
+            };
+
         case 'POST_TIMELINE': {
             return {
                 ...state,
@@ -112,7 +120,20 @@ const getTimelineFavorites = dispatch => async (handle) => {
     } catch (err) {
         console.log('err favorites', err);
     }
-}
+};
+
+const getTimelineById = dispatch => async (id) => {
+    try {
+        const response = await historyCardsApi.get(`/timelinep/${id}/1`);
+        dispatch({
+            type: 'SET_TIMELINE_DETAILS',
+            payload: response.data
+        })
+    } catch (err) {
+        // handle state with errors
+        console.log('error getting timeline cards: ', err)
+    }
+};
 
 const getTimelineCards = dispatch => async (id) => {
     try {
@@ -125,7 +146,7 @@ const getTimelineCards = dispatch => async (id) => {
         // handle state with errors
         console.log('error getting timeline cards: ', err)
     }
-}
+};
 
 const addNewTimeline = dispatch => async ({ title, description }) => {
     dispatch({ type: 'LOADING_DATA_UI' })
@@ -158,7 +179,7 @@ const addNewTimeline = dispatch => async ({ title, description }) => {
     } catch (err) {
         console.log('err adding new timeline ', err);
     }
-}
+};
 
 const uploadImageTimeline = dispatch => async ({ timelineId, image }) => {
     dispatch({ type: 'LOADING_DATA_UI' })
@@ -213,7 +234,7 @@ export const { Provider, Context } = createDataContext(
     timelineReducer,
     { 
         getTimelines, getTimelineCards, getTimelineFavorites, clearCards, 
-        addNewTimeline, uploadImageTimeline, getRecentActivities
+        addNewTimeline, uploadImageTimeline, getRecentActivities , getTimelineById
     },
     {
         errors: [],
@@ -221,6 +242,7 @@ export const { Provider, Context } = createDataContext(
         timelines: [],
         favorites: [],
         cards: [],
-        activities : []
+        activities : [],
+        timeline : {}
     }
 );

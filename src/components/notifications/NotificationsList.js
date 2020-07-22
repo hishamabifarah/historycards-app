@@ -1,11 +1,13 @@
 import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { withNavigation } from 'react-navigation';
+
 // dayjs
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 
-const NotificationsList = ({ result }) => {
+const NotificationsList = ({ result , navigation }) => {
 
     dayjs.extend(relativeTime);
 
@@ -27,7 +29,11 @@ const NotificationsList = ({ result }) => {
         <View style={styles.listItem}>
             <View style={{ alignItems: "flex-start", flex: 1 }}>
             <TouchableOpacity 
-                onPress={() => {}}>
+              onPress={() =>
+              navigation.navigate('TimelineDetailScreenByID',
+                  {
+                      id: result.timelineId
+                  })}>
                 <Text style={styles.text}>
                 {icon} {result.sender} {verb} your timeline
                 </Text>
@@ -66,4 +72,4 @@ const styles = StyleSheet.create({
     }
   });
 
-export default NotificationsList;
+export default withNavigation(NotificationsList);
