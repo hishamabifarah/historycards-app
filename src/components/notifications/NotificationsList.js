@@ -34,6 +34,7 @@ const NotificationsList = ({ result , navigation }) => {
                   {
                       id: result.timelineId
                   })}>
+                    
                 <Text style={styles.text}>
                 {icon} {result.sender} {verb} your timeline
                 </Text>

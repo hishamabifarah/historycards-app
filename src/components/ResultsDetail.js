@@ -1,5 +1,7 @@
 import React from 'react';
 import { View, Image, Text, StyleSheet, Dimensions } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
+import StarRating from 'react-native-star-rating';
 
 const { width: WIDTH } = Dimensions.get('window');
 console.log(`width signup screen: ${WIDTH} `);
@@ -16,7 +18,23 @@ const ResultsDetail = ({ result }) => {
             <View>
                 {image}
                 <Text style={styles.name}>{result.title}</Text>
-                <Text style={styles.ratings}>{result.ratingAverage} Stars , {result.likeCount} Likes</Text>
+                <Text style={styles.ratings}>
+
+                    <StarRating
+                        disabled={false}
+                        maxStars={5}
+                        starSize={16}
+                        fullStarColor={'#ffb400'}
+                        rating={result.ratingAverage}
+                    />
+
+                    <Icon 
+                        style={{marginRight: 6 , marginLeft: 6}}
+                        name={'md-heart'} 
+                        size={16} 
+                        color={'#3498db'} />
+                    {result.likeCount} 
+                </Text>
             </View>
         </View>
     )
@@ -25,19 +43,22 @@ const ResultsDetail = ({ result }) => {
 const styles = StyleSheet.create({
     container: {
         marginLeft: 5,
-        marginRight: 5
+        marginRight: 5,
+        marginBottom: 5
     },
     image: {
-        width: (WIDTH / 2 ) - 10,
+        width: (WIDTH / 2) - 10,
         height: 120,
         borderRadius: 4,
         marginBottom: 5
     },
     name: {
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        marginBottom: 2
     },
     ratings: {
-        marginBottom: 1
+        marginBottom: 1,
+        marginRight: 10
     }
 });
 
