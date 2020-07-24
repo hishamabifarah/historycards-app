@@ -6,6 +6,15 @@ import { withNavigation } from 'react-navigation';
 
 const Notifications = ({ navigation }) => {
     const { state } = useContext(AuthContext);
+    // console.log('auth state in notifications ' , state.authenticated);
+    // console.log(' state in notifications ' , state);
+    const checkIfAuthenticated = () => {
+        if(state.authenticated){
+            navigation.navigate('Notifications');
+        }else{
+            navigation.navigate('Splash');
+        }
+    }
 
     if (state.authenticated) {
         return (
@@ -14,7 +23,8 @@ const Notifications = ({ navigation }) => {
                     <Icon
                         type="ionicon"
                         name="ios-notifications"
-                        onPress={() => navigation.navigate('Notifications')}
+                        // onPress={() => navigation.navigate('Notifications')}
+                        onPress={checkIfAuthenticated}
                         size={26} color='#fff' />
 
                     {

@@ -112,7 +112,7 @@ const getRecentActivities = (dispatch) => async () => {
 const getTimelineFavorites = dispatch => async (handle) => {
     try {
         const response = await historyCardsApi.get(`/user/favorites/${'hisham'}`);
-        console.log('res data', response.data);
+        // console.log('res data', response.data);
         dispatch({
             type: 'SET_FAVORITES',
             payload: response.data.timelines
@@ -123,12 +123,14 @@ const getTimelineFavorites = dispatch => async (handle) => {
 };
 
 const getTimelineById = dispatch => async (id) => {
+    dispatch({type: 'LOADING_DATA_UI'})
     try {
         const response = await historyCardsApi.get(`/timelinep/${id}/1`);
         dispatch({
             type: 'SET_TIMELINE_DETAILS',
             payload: response.data
         })
+        dispatch({type: 'STOP_LOADING_DATA_UI'})
     } catch (err) {
         // handle state with errors
         console.log('error getting timeline cards: ', err)
@@ -136,12 +138,14 @@ const getTimelineById = dispatch => async (id) => {
 };
 
 const getTimelineCards = dispatch => async (id) => {
+    dispatch({type: 'LOADING_DATA_UI'})
     try {
         const response = await historyCardsApi.get(`/timelinep/${id}/1`);
         dispatch({
             type: 'SET_TIMELINE',
             payload: response.data.timeline.cards
         })
+        dispatch({type: 'STOP_LOADING_DATA_UI'})
     } catch (err) {
         // handle state with errors
         console.log('error getting timeline cards: ', err)

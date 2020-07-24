@@ -1,6 +1,6 @@
 // React Native
 import React, { useContext, useEffect } from 'react'
-import { Text, StyleSheet, Button, ScrollView, Image, Dimensions, View } from 'react-native';
+import { Text, StyleSheet, Button, ScrollView, Image, Dimensions, View , ActivityIndicator } from 'react-native';
 import { NavigationEvents } from 'react-navigation';
 import { Context as TimelineContext } from "../context/timelinesContext";
 
@@ -46,6 +46,11 @@ const TimelineDetailScreenByID = ({ navigation }) => {
         : <Image style={styles.image} source={{ uri: noImageUri }} />
 
     return (
+
+        state.loading
+        ? <ActivityIndicator style={{ paddingTop: 15 }} size="large" color="#00bcd4" /> 
+        :   
+        (
         <ScrollView>
             <NavigationEvents
                 onDidBlur={clearCards}
@@ -94,6 +99,7 @@ const TimelineDetailScreenByID = ({ navigation }) => {
             </View> */}
       
         </ScrollView>
+        )
     )
 };
 

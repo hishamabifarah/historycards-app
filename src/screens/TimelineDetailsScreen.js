@@ -1,6 +1,6 @@
 // React Native
 import React, { useContext, useEffect } from 'react'
-import { Text, StyleSheet, Button, ScrollView, Image, Dimensions, View } from 'react-native';
+import { Text, StyleSheet, Button, ScrollView, Image, Dimensions, View , ActivityIndicator} from 'react-native';
 import { Context as TimelineContext } from "../context/timelinesContext";
 import Timeline from 'react-native-timeline-flatlist';
 import { NavigationEvents } from 'react-navigation';
@@ -21,7 +21,7 @@ const TimelineDetailsScreen = ({ navigation }) => {
     const id = navigation.getParam('id');
     const { state, getTimelineCards , clearCards } = useContext(TimelineContext);
 
-    // console.log('state Timeline Details: ', state);
+    console.log('state Timeline Details: ', state);
 
     useEffect(() => {
         getTimelineCards(id);
@@ -64,6 +64,10 @@ const TimelineDetailsScreen = ({ navigation }) => {
                 </Block>
             </View>
 
+                
+            {state.loading
+            ? <ActivityIndicator style={{ paddingTop: 15 }} size="large" color="#00bcd4" />                
+            :(
             <View>
                 <Text style={styles.title}>Cards</Text>
                 <Timeline
@@ -95,7 +99,7 @@ const TimelineDetailsScreen = ({ navigation }) => {
                     innerCircle={'dot'}
                 /> 
             </View>
-      
+            )}
         </ScrollView>
     )
 };

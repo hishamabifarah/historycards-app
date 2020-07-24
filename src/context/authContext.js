@@ -7,13 +7,13 @@ import { Keyboard } from 'react-native'
 const authReducer = (state, action) => {
     switch (action.type) {
         case 'signup':
-            return { errors: [], token: action.payload, loading: false };
+            return { errors: [], token: action.payload, loading: false , authenticated: true };
         case 'signin':
             return { errors: [], token: action.payload, loading: false, authenticated: true };
         case 'signout':
-            return { token: null, errors: [], loading: false };
+            return { token: null, errors: [], loading: false, authenticated : false };
         case 'SET_USER_DETAILS':
-            return { userDetails: action.payload.user };
+            return { userDetails: action.payload.user , authenticated : true };
         case 'clear_error_messages':
             return { ...state, errors: [], loading: false };
         case 'loading_UI':
@@ -27,7 +27,7 @@ const authReducer = (state, action) => {
         case 'set_authenticated':
             return { ...state, authenticated: true }
         case 'set_user':
-            return { notifications: action.payload.notifications }
+            return { ...state ,  notifications: action.payload.notifications , authenticated: true , ...action.payload }
         default:
             return state;
     }
@@ -48,7 +48,7 @@ const signup = (dispatch) => async ({ email, password, confirmPassword, handle }
             "handle": handle
         };
 
-        console.log('newUserData: ', newUserData);
+        // console.log('newUserData: ', newUserData);
         const response = await historyCardsApi.post('/signup', newUserData);
         await AsyncStorage.setItem('token', response.data.tokenId);
 
@@ -101,7 +101,7 @@ const signin = (dispatch) => async ({ email, password }) => {
 
         } catch (err) {
             //todo: handle error
-            console.log('err get user data', err);
+            console.log('err get user data in sign in ', err);
         }
 
         navigate('mainFlow');
@@ -154,17 +154,18 @@ const updateUserDetails = (dispatch) => async ({ facebook, twitter, website, loc
 };
 
 const signout = dispatch => async () => {
+    console.log('signout() started');
     await AsyncStorage.removeItem('token');
     dispatch({ type: 'signout' });
     navigate('Splash');
 };
 
 const tryLocalSignin = (dispatch) => async () => {
-
+    console.log('tryLocalSignin() started');
     const token = await AsyncStorage.getItem('token');
     if (token) {
         // copied  getUserData() here because couldn't get getUserData() to be called with dispatch 
-        console.log('getting user data in tryLocalSignin()');
+       
         try {
             const res = await historyCardsApi.get('/user', {
                 headers: {
@@ -172,7 +173,7 @@ const tryLocalSignin = (dispatch) => async () => {
                 }
             });
 
-            // console.log('get user data' , res.data);
+           console.log('tryLocalSignin user data' , res.data);
 
             await AsyncStorage.setItem('handle', res.data.credentials.handle);
 
@@ -183,7 +184,10 @@ const tryLocalSignin = (dispatch) => async () => {
 
         } catch (err) {
             //todo: handle error
-            console.log('err get user data', err);
+            console.log('err get user data in tryLocalSign()', err);
+            await AsyncStorage.removeItem('token');
+            dispatch({ type: 'signout' });
+            navigate('Splash');
         }
    
         dispatch({ type: 'set_authenticated' });
@@ -198,8 +202,7 @@ const tryLocalSignin = (dispatch) => async () => {
 
 // const getUserData = (dispatch) => async (token) =>  { // doesn't work with dispatch(getUserData()) or getUserData()
 const getUserData = async (token) => {
-    console.log('getting user data', token);
-
+    console.log('getUserData() started');
     try {
         const res = await historyCardsApi.get('/user', {
             headers: {
@@ -207,7 +210,7 @@ const getUserData = async (token) => {
             }
         });
 
-        console.log('get user data', res.data);
+        console.log('getUserData() data: ', res.data);
 
         await AsyncStorage.setItem('handle', res.data.credentials.handle);
 
@@ -222,7 +225,7 @@ const getUserData = async (token) => {
 }
 
 const tryLocalProfile = (dispatch) => async () => {
-
+    console.log('tryLocalProfile() started');
     const token = await AsyncStorage.getItem('token');
     if (!token) {
         navigate('Splash');

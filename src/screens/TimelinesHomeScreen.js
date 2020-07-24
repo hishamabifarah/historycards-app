@@ -24,7 +24,7 @@ const filterTimelinesLatest = (arr, n) => {
 const TimelinesHomeScreen = ({ navigation }) => {
 
     const { state, getTimelines , getRecentActivities} = useContext(TimelineContext);
-
+    // console.log('state in home screen , ' , state);
     useEffect(() => {
         getTimelines(1);
         getRecentActivities();
@@ -36,7 +36,6 @@ const TimelinesHomeScreen = ({ navigation }) => {
             : (
                 <ScrollView>
                     <TimelinesLatestList
-                        // timelines={filterTimelinesLatest(state.timelines, 4)}
                         timelines={state.timelines}
                         title="Latest Timelines"
                     />
@@ -47,11 +46,9 @@ const TimelinesHomeScreen = ({ navigation }) => {
                         </Spacer>
                     </TouchableOpacity>
 
-                    {/* <Divider margin={[theme.sizes.padding * 0.9, 0]} /> */}
                     <Divider margin={[15 * 0.9, 0]} />
 
                     <TimelinesHighestRatedList
-                        // timelines={sortTimelinesByRating(state.timelines)}
                         timelines={state.timelines}
                         title="Highest Rated"
                     />

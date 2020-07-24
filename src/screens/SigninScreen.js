@@ -61,7 +61,7 @@ const SigninScreen = () => {
                         onFocus= {() => onFocus()}
                     />
                     {
-                        state.errors.email
+                        state.errros && state.errors.email
                             ? <Text style={styles.error} >{state.errors.email}</Text>
                             : null
                     }
@@ -80,7 +80,7 @@ const SigninScreen = () => {
                         onFocus= {() => onFocus()}
                     />
                     {
-                        state.errors.password
+                        state.errros && state.errors.password
                             ? <Text style={styles.error}>{state.errors.password}</Text>
                             : null
                     }
