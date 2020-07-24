@@ -1,8 +1,8 @@
 // React Native
 import React, { useContext, useEffect } from 'react'
 import { Text, StyleSheet, Button, ScrollView, Image, Dimensions, View } from 'react-native';
-import { Context as TimelineContext } from "../context/timelinesContext";
 import { NavigationEvents } from 'react-navigation';
+import { Context as TimelineContext } from "../context/timelinesContext";
 
 // Components
 import Block from '../elements/Block';

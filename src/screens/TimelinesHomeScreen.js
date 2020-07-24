@@ -58,10 +58,10 @@ const TimelinesHomeScreen = ({ navigation }) => {
 
                     <Divider margin={[15 * 0.9, 0]} />
 
-                    <RecentActivitiesList
+                     <RecentActivitiesList
                         activities={state.activities}
                         title="Recent Activities"
-                    />
+                    /> 
 
                 </ScrollView>
             )

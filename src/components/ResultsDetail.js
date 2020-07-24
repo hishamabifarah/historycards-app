@@ -17,9 +17,10 @@ const ResultsDetail = ({ result }) => {
         <View style={styles.container}>
             <View>
                 {image}
-                <Text style={styles.name}>{result.title}</Text>
-                <Text style={styles.ratings}>
 
+                <Text style={styles.name}>{result.title}</Text>
+
+                <View style={{flexDirection:'row'}}>
                     <StarRating
                         disabled={false}
                         maxStars={5}
@@ -27,14 +28,15 @@ const ResultsDetail = ({ result }) => {
                         fullStarColor={'#ffb400'}
                         rating={result.ratingAverage}
                     />
-
-                    <Icon 
-                        style={{marginRight: 6 , marginLeft: 6}}
-                        name={'md-heart'} 
-                        size={16} 
+                    <Icon
+                        style={{ marginRight: 6, marginLeft: 6 }}
+                        name={'md-heart'}
+                        size={16}
                         color={'#3498db'} />
-                    {result.likeCount} 
-                </Text>
+                    <Text>
+                        {result.likeCount}
+                    </Text>
+                </View>
             </View>
         </View>
     )

@@ -17,6 +17,7 @@ const NotificationsScreen = () => {
             renderItem={({ item }) => {
                 return (
                     <NotificationsList result={item} />
+        
                 )
             }}
         />  

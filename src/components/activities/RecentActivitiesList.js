@@ -1,16 +1,16 @@
 import React from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity , SafeAreaView } from 'react-native';
-import RecentActivitiesListDetails from './RecentActivitiesListDetails';
 import { withNavigation } from 'react-navigation'
+import RecentActivitiesListDetails from './RecentActivitiesListDetails';
+
 
 const RecentActivitiesList = ({ title, activities, navigation }) => {
 
-    if (!activities.length) {
+    if (!activities) {
         return null;
     }
     return (
         <View style={styles.container}>
-          
           <Text style={styles.title}>{title}</Text>
             <FlatList
                 data={activities}
@@ -19,7 +19,6 @@ const RecentActivitiesList = ({ title, activities, navigation }) => {
                 renderItem={({ item }) => {
                     return (
                             <RecentActivitiesListDetails result={item} />
-
                     )
                 }}
             />

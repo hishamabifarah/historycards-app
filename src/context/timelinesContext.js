@@ -98,7 +98,7 @@ const getTimelines = (dispatch) => async (page) => {
 
 const getRecentActivities = (dispatch) => async () => {
     try {
-        const response = await historyCardsApi.get('/activity')
+        const response = await historyCardsApi.get('/activity');
         dispatch({
             type: 'SET_ACTIVITIES',
             payload: response.data

@@ -9,7 +9,7 @@ const Notifications = ({ navigation }) => {
 
     if (state.authenticated) {
         return (
-            <View >
+            <View>
                 <View style={{ marginLeft: 5 }}>
                     <Icon
                         type="ionicon"
