@@ -7,32 +7,100 @@ const timelineReducer = (state, action) => {
     switch (action.type) {
         case 'LOADING_DATA_UI':
             return { ...state, loading: true }
+
         case 'SET_TIMELINES':
-            //  console.log('context timelines' , action.payload.timelines);
+            if(action.payload !== null){
             if (action.payload.page === 1) {
                 return {
                     ...state,
                     timelines: action.payload.timelines,
                     pageCount: action.payload.pageCount,
                     page: action.payload.page,
-                    loading: false
+                    loading: false,
+                    errors: []
                 };
             } else {
                 return {
                     ...state,
-                    timelines: [...action.payload.timelines, ...state.timelines],
+                    timelines: [...state.timelines, ...action.payload.timelines],
                     pageCount: action.payload.pageCount,
                     page: action.payload.page,
+                    loading: false,
+                    errors: []
+                }
+            }
+        }else{
+            return {
+                ...state,
+                errors: "Error retrieving timelines, please try again",
+                loading: false
+            }
+        }
+        
+        case 'SET_TIMELINE':
+            if (action.payload === 'paginateError' || action.payload === null) {
+                return {
+                    ...state,
+                    errorsPaginateTimeline: 'Error retrieving timeline cards, please try again',
                     loading: false
                 }
             }
 
-        case 'SET_TIMELINE':
-            return {
-                ...state,
-                cards: action.payload,
-                loading: false
-            };
+            if (action.payload !== null) {
+                if (action.payload.page === 1) {
+                    return {
+                        ...state,
+                        loading: false,
+                        hasMoreCards: action.payload.page === action.payload.pageCount ? false : true,
+                        totalRecordsCards: action.payload.totalRecords,
+                        pageCards: action.payload.page,
+                        pageCountCards: action.payload.pageCount,
+                        status: action.payload.status,
+                        timeline: action.payload.timeline,
+                        errorsMainTimeline: '',
+                        errorsPaginateTimeline: '',
+                        cards: action.payload.timeline.cards
+                    };
+                } else {
+                    state.timeline.cards.filter((card, index) => {
+                        for (let i = 0; i < action.payload.timeline.cards.length; i++) {
+                            if (card.cardId === action.payload.timeline.cards[i].cardId) {
+                                action.payload.timeline.cards.splice(i, 1);
+                            } else {
+
+                            }
+                        }
+                    })
+                    return {
+                        ...state,
+                        loading: false,
+                        hasMoreCards: action.payload.page === action.payload.pageCount ? false : true,
+                        totalRecordsCards: action.payload.totalRecords,
+                        pageCards: action.payload.page,
+                        pageCountCards: action.payload.pageCount,
+                        status: action.payload.status,
+                        errorsMainTimeline: '',
+                        errorsPaginateTimeline: '',
+                        cards: [...state.timeline.cards, ...action.payload.timeline.cards],
+                        timeline:
+                            Object.assign(
+                                state.timeline,
+                                {},
+                                {
+                                    cards: [...state.timeline.cards, ...action.payload.timeline.cards]
+                                })
+                    }
+                }
+            }
+            else {
+                return {
+                    ...state,
+                    errorsMainTimeline: 'Retrieving timeline, please try again',
+                    errorsPaginateTimeline: '',
+                    loading: false
+                }
+            }
+
 
         case 'SET_TIMELINE_DETAILS':
             return {
@@ -66,24 +134,18 @@ const timelineReducer = (state, action) => {
                 ...state
             };
         case 'SET_ACTIVITIES':
-                return {
-                    ...state,
-                    activities: action.payload,
-                    loading: false
-                }
+            return {
+                ...state,
+                activities: action.payload,
+                loading: false
+            }
 
-        case 'CLEAR_TIMELINE_CARDS':
-            return { cards: [] };
-        // case 'LOADING_DATA':
-        //     return { ...state, loading: true }
         default:
             return state;
     }
 };
 
 const getTimelines = (dispatch) => async (page) => {
-    // dispatch({ type: 'LOADING_DATA' });
-    console.log('page in context: ', page);
     try {
         const response = await historyCardsApi.get(`/timelinesp/${page}`)
         dispatch({
@@ -91,8 +153,10 @@ const getTimelines = (dispatch) => async (page) => {
             payload: response.data
         })
     } catch (err) {
-        // handle state with errors
-        console.log('error getting timelines: ', err)
+        dispatch({
+            type: 'SET_TIMELINES',
+            payload: null
+        })
     }
 };
 
@@ -122,33 +186,37 @@ const getTimelineFavorites = dispatch => async (handle) => {
     }
 };
 
-const getTimelineById = dispatch => async (id) => {
-    dispatch({type: 'LOADING_DATA_UI'})
+const getTimelineById = dispatch => async (id, page) => {
+    dispatch({ type: 'LOADING_DATA_UI' })
     try {
-        const response = await historyCardsApi.get(`/timelinep/${id}/1`);
+        const response = await historyCardsApi.get(`/timelinep/${id}/${page}`);
         dispatch({
             type: 'SET_TIMELINE_DETAILS',
             payload: response.data
         })
-        dispatch({type: 'STOP_LOADING_DATA_UI'})
+        dispatch({ type: 'STOP_LOADING_DATA_UI' })
     } catch (err) {
         // handle state with errors
         console.log('error getting timeline cards: ', err)
     }
 };
 
-const getTimelineCards = dispatch => async (id) => {
-    dispatch({type: 'LOADING_DATA_UI'})
+const getTimelineCards = dispatch => async (id , page) => {
+    console.log('page in context cards' , page);
+    dispatch({ type: 'LOADING_DATA_UI' })
     try {
-        const response = await historyCardsApi.get(`/timelinep/${id}/1`);
+        const response = await historyCardsApi.get(`/timelinep/${id}/${page}`);
         dispatch({
             type: 'SET_TIMELINE',
-            payload: response.data.timeline.cards
+            payload: response.data
         })
-        dispatch({type: 'STOP_LOADING_DATA_UI'})
+        console.log('getTimelineCards response ' , response.data)
+        dispatch({ type: 'STOP_LOADING_DATA_UI' })
     } catch (err) {
-        // handle state with errors
-        console.log('error getting timeline cards: ', err)
+        dispatch({
+            type: 'SET_TIMELINE',
+            payload: null
+        })
     }
 };
 
@@ -209,14 +277,14 @@ const uploadImageTimeline = dispatch => async ({ timelineId, image }) => {
         const response = await fetch(`/timeline/${timelineId}/image`, {
             method: "POST",
             headers: {
-                 "Content-Type": "multipart/form-data",
+                "Content-Type": "multipart/form-data",
             },
             body: formData,
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-    
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
 
         dispatch({
             type: 'UPLOAD_IMAGE_TIMELINE',
@@ -230,15 +298,12 @@ const uploadImageTimeline = dispatch => async ({ timelineId, image }) => {
     }
 }
 
-const clearCards = (dispatch) => () => {
-    dispatch({ type: 'CLEAR_TIMELINE_CARDS' })
-}
 
 export const { Provider, Context } = createDataContext(
     timelineReducer,
-    { 
-        getTimelines, getTimelineCards, getTimelineFavorites, clearCards, 
-        addNewTimeline, uploadImageTimeline, getRecentActivities , getTimelineById
+    {
+        getTimelines, getTimelineCards, getTimelineFavorites,
+        addNewTimeline, uploadImageTimeline, getRecentActivities, getTimelineById
     },
     {
         errors: [],
@@ -246,7 +311,9 @@ export const { Provider, Context } = createDataContext(
         timelines: [],
         favorites: [],
         cards: [],
-        activities : [],
-        timeline : {}
+        activities: [],
+        timeline: {},
+        errorsMainTimeline: '',
+        errorsPaginateTimeline: ''
     }
 );

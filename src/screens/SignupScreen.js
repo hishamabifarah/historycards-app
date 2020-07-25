@@ -5,7 +5,6 @@ import NavLink from '../navigation/NavLink';
 import HideWithKeyboard from 'react-native-hide-with-keyboard';
 import { NavigationEvents } from 'react-navigation';
 
-
 import {
     Text,
     StyleSheet,

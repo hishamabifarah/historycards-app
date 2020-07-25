@@ -24,18 +24,24 @@ const filterTimelinesLatest = (arr, n) => {
 const TimelinesHomeScreen = ({ navigation }) => {
 
     const { state, getTimelines , getRecentActivities} = useContext(TimelineContext);
-    // console.log('state in home screen , ' , state);
+    console.log('state in home screen , ' , state);
     useEffect(() => {
         getTimelines(1);
         getRecentActivities();
     }, []);
 
+    const reloadOnError = () =>{
+        getTimelines(1);
+        getRecentActivities();
+    }
+
     return (
-        state.loading
+        state.loading 
             ? <ActivityIndicator style={{ paddingTop: 15 }} size="large" color="#00bcd4" />
-            : (
+            : !state.errors.length > 0 ? (
                 <ScrollView>
                     <TimelinesLatestList
+                        // timelines={filterTimelinesLatest(state.timelines,8)}
                         timelines={state.timelines}
                         title="Latest Timelines"
                     />
@@ -46,12 +52,12 @@ const TimelinesHomeScreen = ({ navigation }) => {
                         </Spacer>
                     </TouchableOpacity>
 
-                    <Divider margin={[15 * 0.9, 0]} />
+                    {/* <Divider margin={[15 * 0.9, 0]} />
 
                     <TimelinesHighestRatedList
                         timelines={state.timelines}
                         title="Highest Rated"
-                    />
+                    /> */}
 
                     <Divider margin={[15 * 0.9, 0]} />
 
@@ -61,6 +67,17 @@ const TimelinesHomeScreen = ({ navigation }) => {
                     /> 
 
                 </ScrollView>
+            ) : (
+                    <View style={styles.mainErrorContainer}>
+                        <View style={styles.errorContainer}>
+                            <Text>{state.errors}</Text>
+                        </View>
+                        <TouchableOpacity
+                            onPress={reloadOnError}
+                            style={styles.errorbutton}>
+                            <Text style={styles.errorText}>Reload Timelines</Text>
+                        </TouchableOpacity>
+                    </View>
             )
     )
 };
@@ -97,7 +114,24 @@ const styles = StyleSheet.create({
     link:{
         color: '#3498db',
         alignSelf: 'flex-end'
-    }
+    },
+    mainErrorContainer: {
+        flex: 1,
+        justifyContent: "center",
+        paddingHorizontal: 10
+      },
+      errorbutton: {
+        alignItems: "center",
+        backgroundColor: "#3498db",
+        padding: 10
+      },
+      errorContainer: {
+        alignItems: "center",
+        padding: 10
+      },
+      errorText:{
+          color: '#FFF'
+      }
 });
 
 export default TimelinesHomeScreen;

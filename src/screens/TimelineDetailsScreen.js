@@ -1,15 +1,17 @@
-// React Native
-import React, { useContext, useEffect } from 'react'
-import { Text, StyleSheet, Button, ScrollView, Image, Dimensions, View , ActivityIndicator} from 'react-native';
+// React
+import React, { useContext, useEffect, useState } from 'react'
+import { Text, StyleSheet, TouchableOpacity, ScrollView, Image, Dimensions, View, ActivityIndicator } from 'react-native';
 import { Context as TimelineContext } from "../context/timelinesContext";
-import Timeline from 'react-native-timeline-flatlist';
-import { NavigationEvents } from 'react-navigation';
 
 // Components
 import Block from '../elements/Block';
-
-// Constants
+import Spacer from '../elements/Spacer';
+import Timeline from 'react-native-timeline-flatlist';
 import { theme } from '../constants';
+
+// dayjs
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
 
 const { width: WIDTH } = Dimensions.get('window');
 
@@ -19,20 +21,27 @@ const TimelineDetailsScreen = ({ navigation }) => {
     const description = navigation.getParam('description');
     const imageUrl = navigation.getParam('image');
     const id = navigation.getParam('id');
-    const { state, getTimelineCards , clearCards } = useContext(TimelineContext);
 
-    console.log('state Timeline Details: ', state);
+    const { state, getTimelineCards } = useContext(TimelineContext);
+
+    const [page, setPage] = useState(state.page)
+
+    dayjs.extend(relativeTime);
 
     useEffect(() => {
-        getTimelineCards(id);
+        getTimelineCards(id, page);
     }, []);
+
+    const reloadOnError = () => {
+        getTimelineCards(id, page);
+    }
 
     const createTimelineArray = (arr) => {
         if (arr && arr.length > 0) {
             let newArr = [];
             for (let i = 0; i < arr.length; i++) {
                 let newValArr = {
-                    "time": '09:12',
+                    "time": dayjs(arr[i].cardDate).format('MMM DD, YYYY'),
                     "title": arr[i].title,
                     "description": arr[i].body
                 }
@@ -41,6 +50,11 @@ const TimelineDetailsScreen = ({ navigation }) => {
             return newArr;
         }
     };
+
+    const loadMore = () => {
+        let page = state.page;
+        getTimelineCards(id, ++page);
+    }
 
     // get one from assets
     const noImageUri = 'https://pianomaster.ie/wp-content/uploads/2019/04/no-image.jpg';
@@ -51,11 +65,8 @@ const TimelineDetailsScreen = ({ navigation }) => {
 
     return (
         <ScrollView>
-            <NavigationEvents
-                onDidBlur={clearCards}
-            />
             <View>
-                <Block style={styles.timeline}>
+                <Block>
                     {image}
                     <Text style={styles.title}>{title}</Text>
                     <Text style={styles.description}>
@@ -64,51 +75,58 @@ const TimelineDetailsScreen = ({ navigation }) => {
                 </Block>
             </View>
 
-                
             {state.loading
-            ? <ActivityIndicator style={{ paddingTop: 15 }} size="large" color="#00bcd4" />                
-            :(
-            <View>
-                <Text style={styles.title}>Cards</Text>
-                <Timeline
-                    style={styles.list}
-                    data={createTimelineArray(state.cards)}
-                    circleSize={20}
-                    circleColor='rgb(45,156,219)'
-                    lineColor='rgb(45,156,219)'
-                    timeContainerStyle={{ minWidth: 52, marginTop: 0 }}
-                    timeStyle={{
-                        textAlign: 'center',
-                        backgroundColor: '#ff9797',
-                        color: 'white',
-                        padding: 5,
-                        borderRadius: 13
-                    }}
-                    descriptionStyle={{ color: 'gray' }}
-                    // options={{
-                    //     style: { paddingTop: 5 },
-                    //     refreshControl: (
-                    //         <RefreshControl
-                    //             refreshing={this.state.isRefreshing}
-                    //             onRefresh={this.onRefresh}
-                    //         />
-                    //     ),
-                    //     renderFooter: this.renderFooter,
-                    //     onEndReached: this.onEndReached
-                    // }}
-                    innerCircle={'dot'}
-                /> 
-            </View>
-            )}
+                ? <ActivityIndicator style={{ paddingTop: 15 }} size="large" color="#00bcd4" />
+                : !state.errorsPaginateTimeline ? (
+                    <View>
+                        <Text style={styles.title}>Cards</Text>
+                        <Timeline
+                            style={styles.list}
+                            data={createTimelineArray(state.cards)}
+                            circleSize={18}
+                            circleColor='rgb(45,156,219)'
+                            lineColor='rgb(45,156,219)'
+                            timeContainerStyle={{ minWidth: 52, marginTop: 0, marginLeft: 2 }}
+                            timeStyle={{
+                                textAlign: 'left',
+                                backgroundColor: '#ff9797',
+                                color: 'white',
+                                padding: 4,
+                                borderRadius: 13
+                            }}
+                            descriptionStyle={{ color: 'gray' }}
+                            options={{
+                                style: { paddingTop: 5 },
+                            }}
+                            innerCircle={'dot'}
+                        />
+                    </View>
+                )
+                    : (
+                        <View style={styles.mainErrorContainer}>
+                            <View style={styles.errorContainer}>
+                                <Text>{state.errorsPaginateTimeline}</Text>
+                            </View>
+                            <TouchableOpacity
+                                onPress={reloadOnError}
+                                style={styles.errorbutton}>
+                                <Text style={styles.errorText}>Reload Cards</Text>
+                            </TouchableOpacity>
+                        </View>
+                    )
+            }
+            {state.hasMoreCards && !state.loading && !state.errorsPaginateTimeline &&
+                <TouchableOpacity onPress={() => loadMore()}>
+                    <Spacer margin={10}>
+                        <Text style={styles.link}>{'Load More'}</Text>
+                    </Spacer>
+                </TouchableOpacity>
+            }
         </ScrollView>
     )
 };
 
 const styles = StyleSheet.create({
-    timeline: {
-        // paddingHorizontal: theme.sizes.base * 2,
-        // paddingVertical: theme.sizes.padding,
-    },
     title: {
         fontWeight: 'bold',
         fontSize: 20,
@@ -129,6 +147,27 @@ const styles = StyleSheet.create({
         flex: 1,
         marginTop: 20,
     },
+    link: {
+        color: '#3498db',
+        alignSelf: 'center'
+    },
+    mainErrorContainer: {
+        flex: 1,
+        justifyContent: "center",
+        paddingHorizontal: 10
+    },
+    errorbutton: {
+        alignItems: "center",
+        backgroundColor: "#3498db",
+        padding: 10
+    },
+    errorContainer: {
+        alignItems: "center",
+        padding: 10
+    },
+    errorText: {
+        color: '#FFF'
+    }
 });
 
 export default TimelineDetailsScreen;

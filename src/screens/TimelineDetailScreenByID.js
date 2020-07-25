@@ -1,12 +1,14 @@
 // React Native
 import React, { useContext, useEffect } from 'react'
 import { Text, StyleSheet, Button, ScrollView, Image, Dimensions, View , ActivityIndicator } from 'react-native';
-import { NavigationEvents } from 'react-navigation';
+// import { NavigationEvents } from 'react-navigation';
 import { Context as TimelineContext } from "../context/timelinesContext";
-
+import Timeline from 'react-native-timeline-flatlist';
 // Components
 import Block from '../elements/Block';
-
+// dayjs
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
 // Constants
 import { theme } from '../constants';
 
@@ -18,7 +20,7 @@ const TimelineDetailScreenByID = ({ navigation }) => {
     const { state, getTimelineById , clearCards } = useContext(TimelineContext);
 
     console.log('state Timeline Details: ', state);
-
+    dayjs.extend(relativeTime);
     useEffect(() => {
         getTimelineById(id);
     }, []);
@@ -28,7 +30,7 @@ const TimelineDetailScreenByID = ({ navigation }) => {
             let newArr = [];
             for (let i = 0; i < arr.length; i++) {
                 let newValArr = {
-                    "time": '09:12',
+                    "time":  dayjs(arr[i].cardDate).format('MM DD, YYYY'),
                     "title": arr[i].title,
                     "description": arr[i].body
                 }
@@ -52,9 +54,6 @@ const TimelineDetailScreenByID = ({ navigation }) => {
         :   
         (
         <ScrollView>
-            <NavigationEvents
-                onDidBlur={clearCards}
-            />
             <View>
                 <Block style={styles.timeline}>
                     {image}
@@ -66,15 +65,15 @@ const TimelineDetailScreenByID = ({ navigation }) => {
                 </Block>
             </View>
 
-            {/* <View>
+            <View>
                 <Text style={styles.title}>Cards</Text>
                 <Timeline
                     style={styles.list}
-                    data={createTimelineArray(state.cards)}
+                    data={createTimelineArray(state.timeline.cards)}
                     circleSize={20}
                     circleColor='rgb(45,156,219)'
                     lineColor='rgb(45,156,219)'
-                    timeContainerStyle={{ minWidth: 52, marginTop: 0 }}
+                    timeContainerStyle={{ minWidth: 48, marginTop: 0 }}
                     timeStyle={{
                         textAlign: 'center',
                         backgroundColor: '#ff9797',
@@ -83,20 +82,9 @@ const TimelineDetailScreenByID = ({ navigation }) => {
                         borderRadius: 13
                     }}
                     descriptionStyle={{ color: 'gray' }}
-                    // options={{
-                    //     style: { paddingTop: 5 },
-                    //     refreshControl: (
-                    //         <RefreshControl
-                    //             refreshing={this.state.isRefreshing}
-                    //             onRefresh={this.onRefresh}
-                    //         />
-                    //     ),
-                    //     renderFooter: this.renderFooter,
-                    //     onEndReached: this.onEndReached
-                    // }}
                     innerCircle={'dot'}
                 /> 
-            </View> */}
+            </View>
       
         </ScrollView>
         )
@@ -104,10 +92,6 @@ const TimelineDetailScreenByID = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-    timeline: {
-        // paddingHorizontal: theme.sizes.base * 2,
-        // paddingVertical: theme.sizes.padding,
-    },
     title: {
         fontWeight: 'bold',
         fontSize: 20,
