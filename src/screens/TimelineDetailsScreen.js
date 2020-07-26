@@ -32,6 +32,14 @@ const TimelineDetailsScreen = ({ navigation }) => {
         getTimelineCards(id, page);
     }, []);
 
+    useEffect(() => {
+        if (page === 1) {
+
+        } else {
+            getTimelineCards(id, page);
+        }
+    }, [page]);
+
     const reloadOnError = () => {
         getTimelineCards(id, page);
     }
@@ -51,17 +59,10 @@ const TimelineDetailsScreen = ({ navigation }) => {
         }
     };
 
-    const loadMore = () => {
-        let page = state.page;
-        getTimelineCards(id, ++page);
-    }
-
-    // get one from assets
-    const noImageUri = 'https://pianomaster.ie/wp-content/uploads/2019/04/no-image.jpg';
 
     const image = imageUrl
         ? <Image style={styles.image} source={{ uri: imageUrl }} />
-        : <Image style={styles.image} source={{ uri: noImageUri }} />
+        : <Image style={styles.image} source={require('../../assets/images/no-image.jpg')} />
 
     return (
         <ScrollView>
@@ -75,9 +76,9 @@ const TimelineDetailsScreen = ({ navigation }) => {
                 </Block>
             </View>
 
-            {state.loading
+            {state.loading && page === 1
                 ? <ActivityIndicator style={{ paddingTop: 15 }} size="large" color="#00bcd4" />
-                : !state.errorsPaginateTimeline ? (
+                : (
                     <View>
                         <Text style={styles.title}>Cards</Text>
                         <Timeline
@@ -102,26 +103,32 @@ const TimelineDetailsScreen = ({ navigation }) => {
                         />
                     </View>
                 )
-                    : (
-                        <View style={styles.mainErrorContainer}>
-                            <View style={styles.errorContainer}>
-                                <Text>{state.errorsPaginateTimeline}</Text>
-                            </View>
-                            <TouchableOpacity
-                                onPress={reloadOnError}
-                                style={styles.errorbutton}>
-                                <Text style={styles.errorText}>Reload Cards</Text>
-                            </TouchableOpacity>
-                        </View>
-                    )
             }
-            {state.hasMoreCards && !state.loading && !state.errorsPaginateTimeline &&
-                <TouchableOpacity onPress={() => loadMore()}>
+
+            {state.hasMoreCards && !state.loading && !state.errorsPaginateTimeline ?
+                <TouchableOpacity onPress={() => setPage(page + 1)}>
                     <Spacer margin={10}>
                         <Text style={styles.link}>{'Load More'}</Text>
                     </Spacer>
                 </TouchableOpacity>
+
+                : state.hasMoreCards && !state.loading && state.errorsPaginateTimeline ? (
+                    <View style={styles.mainErrorContainer}>
+                        <View style={styles.errorContainer}>
+                            <Text>{state.errorsPaginateTimeline}</Text>
+                        </View>
+                        <Spacer margin={10}>
+                        <TouchableOpacity
+                            onPress={reloadOnError}
+                            style={styles.errorbutton}>
+                            <Text style={styles.errorText}>Reload Cards</Text>
+                        </TouchableOpacity>
+                        </Spacer>
+                    </View>
+
+                ) : (null)
             }
+
         </ScrollView>
     )
 };

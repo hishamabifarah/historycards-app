@@ -202,7 +202,7 @@ const getTimelineById = dispatch => async (id, page) => {
 };
 
 const getTimelineCards = dispatch => async (id , page) => {
-    console.log('page in context cards' , page);
+    // console.log('page in context cards' , page);
     dispatch({ type: 'LOADING_DATA_UI' })
     try {
         const response = await historyCardsApi.get(`/timelinep/${id}/${page}`);
@@ -210,7 +210,7 @@ const getTimelineCards = dispatch => async (id , page) => {
             type: 'SET_TIMELINE',
             payload: response.data
         })
-        console.log('getTimelineCards response ' , response.data)
+        // console.log('getTimelineCards response ' , response.data)
         dispatch({ type: 'STOP_LOADING_DATA_UI' })
     } catch (err) {
         dispatch({
