@@ -6,17 +6,13 @@ import Spacer from '../elements/Spacer';
 const TimelineListAllScreen = () => {
 
     const { state, getTimelines } = useContext(TimelineContext);
-    // console.log('state favorites' , state);
     useEffect(() => {
         getTimelines(1);
     },[])
 
     const loadMore = (page) => {
-        console.log('page in load more' , page)
         getTimelines(page);
     }
-
-    console.log('timelines All state' , state.timelines)
 
     return (
         <ScrollView>
@@ -35,7 +31,6 @@ const TimelineListAllScreen = () => {
                             : null 
                         }
                     </View>
-
                 )
             }
         </ScrollView>

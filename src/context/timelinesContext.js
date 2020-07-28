@@ -114,9 +114,16 @@ const timelineReducer = (state, action) => {
             return {
                 ...state,
                 timelines: [action.payload, ...state.timelines],
-                loading: false
+                loading: false,
+                errors: []
             };
         }
+        case 'ADD_TIMELINE_ERROR' :
+                return {
+                    ...state,
+                    loading: false,
+                    errors: "Error adding timeline, plz try again"
+                }
 
         case 'SET_FAVORITES':
             return {
@@ -139,7 +146,6 @@ const timelineReducer = (state, action) => {
                 activities: action.payload,
                 loading: false
             }
-
         default:
             return state;
     }
@@ -221,6 +227,7 @@ const getTimelineCards = dispatch => async (id , page) => {
 };
 
 const addNewTimeline = dispatch => async ({ title, description }) => {
+    console.log('adding new timeline');
     dispatch({ type: 'LOADING_DATA_UI' })
     const token = await AsyncStorage.getItem('token');
 
@@ -249,7 +256,10 @@ const addNewTimeline = dispatch => async ({ title, description }) => {
         });
 
     } catch (err) {
-        console.log('err adding new timeline ', err);
+        dispatch({
+            type : 'ADD_TIMELINE_ERROR',
+            payload: null
+        })
     }
 };
 

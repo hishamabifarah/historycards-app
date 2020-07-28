@@ -6,13 +6,21 @@ import { Context as AuthContext } from "../../context/authContext";
 const TimelineAdd = ({ navigation }) => {
     const { state } = useContext(AuthContext);
 
+    const checkIfAuthenticated = () => {
+        if(state.authenticated){
+            navigation.navigate('TimelineCreate');
+        }else{
+            navigation.navigate('Splash');
+        }
+    }
+
     if (state.authenticated) {
         return (
             <Icon
-                style={{marginLeft: 10}}
+                style={{marginLeft: 20}}
                 name={'add'}
-                size={26}
-                onPress={() => navigation.navigate('TimelineCreate')}
+                size={30}
+                onPress={checkIfAuthenticated}
                 color="#fff" />
         )
     } else

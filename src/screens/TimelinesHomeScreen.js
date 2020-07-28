@@ -24,7 +24,7 @@ const filterTimelinesLatest = (arr, n) => {
 const TimelinesHomeScreen = ({ navigation }) => {
 
     const { state, getTimelines , getRecentActivities} = useContext(TimelineContext);
-    console.log('state in home screen , ' , state);
+
     useEffect(() => {
         getTimelines(1);
         getRecentActivities();

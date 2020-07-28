@@ -1,30 +1,28 @@
 import React from 'react';
-import { Image, StyleSheet, SafeAreaView , Text} from 'react-native';
-import {  Content, Card, CardItem, Thumbnail, Button, Icon, Left, Body } from 'native-base';
+import { Image, StyleSheet, SafeAreaView, Text } from 'react-native';
+import { Content, Card, CardItem, Thumbnail, Button, Left, Right, Body } from 'native-base';
 
 // dayjs
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 
+import Icon from 'react-native-vector-icons/Ionicons';
+import Divider from '../../elements/Divider';
+import LikeTimelineButton from '../timeline/LikeTimelineButton';
+
 const TimelinesCardsList = ({ result }) => {
-
-    const noImageUri = 'https://pianomaster.ie/wp-content/uploads/2019/04/no-image.jpg';
-
     const userAvar = result.userImage
 
     const image = result.imageUrl
 
-    const renderIfImage = result.imageUrl 
+    const renderIfImage = result.imageUrl
         ? (
             <Image
-            source={{ uri: image }}
-            style={styles.image}
-        />
+                source={{ uri: image }}
+                style={styles.image}
+            />
         )
         : null
-
-    // ? <Image style={styles.image} source={{ uri: result.imageUrl }} />
-    // : <Image style={styles.image} source={{ uri: noImageUri }} />
 
     dayjs.extend(relativeTime);
 
@@ -47,13 +45,53 @@ const TimelinesCardsList = ({ result }) => {
                             <Text>{result.description}</Text>
                         </Body>
                     </CardItem>
+
+                    <Divider margin={[2 * 0.9, 0]} />
+                    
                     <CardItem>
                         <Left>
                             <Button transparent textStyle={{ color: '#87838B' }}>
-                                <Icon name="logo-github" />
-                                <Text>1,926 stars</Text>
+                            <LikeTimelineButton/>
+                                <Text>
+                                {result.likeCount}
+                                 </Text>
+                            </Button>
+                            <Button transparent textStyle={{ color: '#87838B' }}>
+                                <Icon
+                                    style={{ marginRight: 3, marginLeft: 3 }}
+                                    name={'md-text'}
+                                    size={20}
+                                    color={'#3498db'} />
+                                <Text>
+                                    {result.commentCount}
+                                </Text>
+                            </Button>
+                            <Button transparent textStyle={{ color: '#87838B' }}>
+                                <Icon
+                                    style={{ marginRight: 3, marginLeft: 3 }}
+                                    name={'ios-eye'}
+                                    size={20}
+                                    color={'#3498db'} />
+                                <Text>
+                                    {result.viewsCount}
+                                </Text>
                             </Button>
                         </Left>
+
+                        <Right>
+                            <Button transparent textStyle={{ color: '#87838B' }}>
+                                <Icon
+                                    style={{ marginRight: 3, marginLeft: 3 }}
+                                    name={'ios-bookmark'}
+                                    size={20}
+                                    color={'#3498db'} />
+                         
+     
+                                <Text>
+                                    View Cards
+                                </Text>
+                            </Button>
+                        </Right>
                     </CardItem>
                 </Card>
             </Content>
@@ -68,14 +106,14 @@ const styles = StyleSheet.create({
     card: {
         padding: 8,
         elevation: 5,
-        flex: 0 
+        flex: 0
     },
     image: {
         width: '100%',
         height: 180,
         marginBottom: 10
     },
-    note:{
+    note: {
         fontSize: 12
     }
 });

@@ -25,7 +25,7 @@ const Notifications = ({ navigation }) => {
                         name="ios-notifications"
                         // onPress={() => navigation.navigate('Notifications')}
                         onPress={checkIfAuthenticated}
-                        size={26} color='#fff' />
+                        size={28} color='#fff' />
 
                     {
                         state.notifications && state.notifications.length > 0
