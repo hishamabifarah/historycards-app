@@ -41,8 +41,7 @@ const TimelinesHomeScreen = ({ navigation }) => {
             : !state.errors.length > 0 ? (
                 <ScrollView>
                     <TimelinesLatestList
-                        // timelines={filterTimelinesLatest(state.timelines,8)}
-                        timelines={state.timelines}
+                        timelines={filterTimelinesLatest(state.timelines,8)}  
                         title="Latest Timelines"
                     />
 

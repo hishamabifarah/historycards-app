@@ -13,7 +13,7 @@ const authReducer = (state, action) => {
         case 'signout':
             return { token: null, errors: [], loading: false, authenticated : false };
         case 'SET_USER_DETAILS':
-            return { userDetails: action.payload.user , authenticated : true };
+            return { ...state,  userDetails: action.payload.user , authenticated : true };
         case 'clear_error_messages':
             return { ...state, errors: [], loading: false };
         case 'loading_UI':
@@ -131,7 +131,7 @@ const updateUserDetails = (dispatch) => async ({ facebook, twitter, website, loc
         "bio": bio ? bio : '',
     };
 
-    console.log('upading user details with ', JSON.stringify(newUserData));
+  //  console.log('upading user details with ', JSON.stringify(newUserData));
 
     try {
         await historyCardsApi.post('/user', newUserData, {
@@ -154,14 +154,14 @@ const updateUserDetails = (dispatch) => async ({ facebook, twitter, website, loc
 };
 
 const signout = dispatch => async () => {
-    console.log('signout() started');
+    // console.log('signout() started');
     await AsyncStorage.removeItem('token');
     dispatch({ type: 'signout' });
     navigate('Splash');
 };
 
 const tryLocalSignin = (dispatch) => async () => {
-    console.log('tryLocalSignin() started');
+   // console.log('tryLocalSignin() started');
     const token = await AsyncStorage.getItem('token');
     if (token) {
         // copied  getUserData() here because couldn't get getUserData() to be called with dispatch 
@@ -173,7 +173,7 @@ const tryLocalSignin = (dispatch) => async () => {
                 }
             });
 
-           console.log('tryLocalSignin user data' , res.data);
+           // console.log('tryLocalSignin user data' , res.data);
 
             await AsyncStorage.setItem('handle', res.data.credentials.handle);
 
@@ -184,7 +184,7 @@ const tryLocalSignin = (dispatch) => async () => {
 
         } catch (err) {
             //todo: handle error
-            console.log('err get user data in tryLocalSign()', err);
+            // console.log('err get user data in tryLocalSign()', err);
             await AsyncStorage.removeItem('token');
             dispatch({ type: 'signout' });
             navigate('Splash');
@@ -263,6 +263,7 @@ export const { Provider, Context } = createDataContext(
         userDetails: {},
         authenticated: false,
         likes: [],
-        notifications: []
+        notifications: [],
+        favorites: []
     }
 );

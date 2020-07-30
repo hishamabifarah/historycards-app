@@ -1,9 +1,13 @@
 ☐ 1. get user data on sign up
-☐ 2. finish adding new timeline + error handling alers and loader
-☐ 3. Notifications screen list for read and unread
-☐ 4. Latest Activities list in home screen
-☐ 5. error handling in main page (add button to reload)
-☐ 6. on signin notifications badge and add button  disappear after browsing fix
-☐ 7. edit stars and likes in home page better design
-☐ 8. Login error fix
+✔ 2. finish adding new timeline + error handling alers and loader @done (7/30/2020, 4:55:48 PM)
+✔ 3. Notifications screen list for read and unread @done (7/30/2020, 4:55:43 PM)
+✔ 4. Latest Activities list in home screen @done (7/30/2020, 4:55:34 PM)
+✔ 5. error handling in main page (add button to reload) @done (7/30/2020, 4:55:28 PM)
+✔ 6. on signin notifications badge and add button  disappear after browsing fix @done (7/30/2020, 5:52:01 PM)
+✔ 7. edit stars and likes in home page better design @done (7/30/2020, 4:55:19 PM)
+✔ 8. Login error fix @done (7/30/2020, 5:51:49 PM)
 ☐ 9. Mark notifications read
+☐ 10. Add Like Button to timeline card
+☐ 11. Add all buttons and icons for timeline card (likes, comments count, bookmark...)
+☐ 12. Add Edit Screen for timeline
+☐ 13. Timelines all load more add loader and error handling

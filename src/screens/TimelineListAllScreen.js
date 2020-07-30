@@ -14,6 +14,8 @@ const TimelineListAllScreen = () => {
         getTimelines(page);
     }
 
+    console.log('state all timelines screen' , state);
+
     return (
         <ScrollView>
             {state.loading

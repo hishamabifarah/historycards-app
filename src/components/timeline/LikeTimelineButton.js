@@ -1,50 +1,51 @@
 import React, { useContext } from 'react'
 import { Context as AuthContext } from "../../context/authContext";
+import { Context as TimelineContext } from "../../context/timelinesContext";
 import { withNavigation } from 'react-navigation';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-const LikeTimelineButton = ({ navigation }) => {
+const LikeTimelineButton = ({ navigation , timelineId}) => {
 
     const { state } = useContext(AuthContext);
+    const { likeTimeline, unlikeTimeline } = useContext(TimelineContext);
 
     const likedTimeline = () => {
-        // if(this.props.user.likes && 
-        //     this.props.user.likes.find(
-        //         (like) => like.timelineId === this.props.timelineId
-        //     )    
-        // )
-        // return true;
-        // else return false;
-        return false;
+        if(state.likes && 
+            state.likes.find(
+                (like) => like.timelineId === timelineId
+            )    
+        )
+        return true;
+        else return false;
+    
     }
 
     const likeButton =
         !state.authenticated ? (
             <Icon
                 style={{ marginRight: 3, marginLeft: 3 }}
-                name={'md-heart'}
+                name={'md-heart-empty'}
                 onPress={() => navigation.navigate('Splash')}
-                color='red'
+                color={'#3498db'}
                 size={20} />
         ) : likedTimeline() ? (
             <Icon
                 style={{ marginRight: 3, marginLeft: 3 }}
                 name={'md-heart'}
                 size={20}
-                color={'3498db'} />
+                onPress={() => unlikeTimeline({timelineId})}
+                color={'#3498db'} />
         ) : (
             <Icon
                 style={{ marginRight: 3, marginLeft: 3 }}
-                name={'md-heart'}
-                color='green'
+                name={'md-heart-empty'}
+                color={'#3498db'}
+                onPress={() => likeTimeline({timelineId})}
                 size={20} />
                 )
 
-    return (
-
-        likeButton
-    )
-
+    return likeButton;
+    
 };
 
 export default withNavigation(LikeTimelineButton);

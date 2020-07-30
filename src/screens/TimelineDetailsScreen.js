@@ -24,6 +24,8 @@ const TimelineDetailsScreen = ({ navigation }) => {
 
     const { state, getTimelineCards } = useContext(TimelineContext);
 
+    console.log('state in TimelineDetailsScreen ' , state);
+
     const [page, setPage] = useState(state.page)
 
     dayjs.extend(relativeTime);
