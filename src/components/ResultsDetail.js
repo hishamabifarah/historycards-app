@@ -4,7 +4,6 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import StarRating from 'react-native-star-rating';
 
 const { width: WIDTH } = Dimensions.get('window');
-console.log(`width signup screen: ${WIDTH} `);
 
 const ResultsDetail = ({ result }) => {
 

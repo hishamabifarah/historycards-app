@@ -1,7 +1,6 @@
 import React, { useContext, useEffect } from 'react'
 import { StyleSheet, ScrollView, Text, View , TouchableOpacity , ActivityIndicator } from 'react-native';
 import { Context as TimelineContext } from "../context/timelinesContext";
-import TimelinesHighestRatedList from '../components/timeline/TimelinesHighestRatedList';
 import TimelinesLatestList from '../components/timeline/TimelinesLatestList';
 import Divider from '../elements/Divider';
 import Spacer from '../elements/Spacer';
@@ -16,7 +15,6 @@ const sortTimelinesByRating = (arr) => {
 
 const filterTimelinesLatest = (arr, n) => {
     const newArr = arr.slice(0, n);
-    console.log('new arr ' , newArr );
     return newArr;
 };
 
@@ -85,7 +83,7 @@ TimelinesHomeScreen.navigationOptions = () => ({
     title: 'History Cards',
     headerTintColor: '#FFF',
     headerStyle: {
-        backgroundColor: '#00bcd4'
+        backgroundColor: '#3498db'
     },
     color: '#000',
     headerRight: () => (

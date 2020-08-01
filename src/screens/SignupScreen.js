@@ -1,4 +1,5 @@
 import React, { useContext, useState } from 'react'
+import { Alert } from 'react-native';
 import { Context as AuthContext } from "../context/authContext";
 import { theme } from '../constants'
 import NavLink from '../navigation/NavLink';
@@ -31,6 +32,20 @@ const SignupScreen = () => {
     const onFocus = () => {
         clearErrorMessage();
     }
+
+    const checkInput = () => {
+        if (email.trim().length === 0) {
+            Alert.alert('Please Enter Email');
+        } else if (password.trim().length === 0) {
+            Alert.alert('Please Enter password');
+        } else if (handle.trim().length === 0) {
+            Alert.alert('Please Enter Username');
+        }
+        else {
+            signup({ email, password, confirmPassword, handle })
+        }
+    }
+
     return (
 
         <KeyboardAvoidingView style={styles.container}>
@@ -46,6 +61,26 @@ const SignupScreen = () => {
                 </HideWithKeyboard>
             </View>
             <View style={styles.buttonsContainer}>
+                {
+                   state.errors && state.errors.email
+                        ? <Text style={styles.error} >{state.errors.email}</Text>
+                        : null
+                }
+                {
+                    state.errors && state.errors.handle
+                        ? <Text style={styles.error}>{state.errors.handle}</Text>
+                        : null
+                }
+                {
+                   state.errors && state.errors.confirmPassword
+                        ? <Text style={styles.error}>{state.errors.confirmPassword}</Text>
+                        : null
+                }
+                                {
+                   state.errors && state.errors.password
+                        ? <Text style={styles.error}>{state.errors.password}</Text>
+                        : null
+                }
                 <View>
                     <Icon style={styles.inputIcon} name={'mail-outline'} size={24} color={'rgb(255,255,255,0.7)'} />
                     <TextInput
@@ -60,11 +95,7 @@ const SignupScreen = () => {
                         returnKeyType="next"
                         onFocus= {() => onFocus()}
                     />
-                    {
-                        state.errors.email
-                            ? <Text style={styles.error} >{state.errors.email}</Text>
-                            : null
-                    }
+
 
                 </View>
                 <View>
@@ -79,11 +110,7 @@ const SignupScreen = () => {
                         returnKeyType="go"
                         onFocus= {() => onFocus()}
                     />
-                    {
-                        state.errors.password
-                            ? <Text style={styles.error}>{state.errors.password}</Text>
-                            : null
-                    }
+
                 </View>
 
                 {/* CONFIRM PASSWORD */}
@@ -113,15 +140,11 @@ const SignupScreen = () => {
                         returnKeyType="go"
                         onFocus= {() => onFocus()}
                     />
-                    {
-                        state.errors.handle
-                            ? <Text style={styles.error}>{state.errors.handle}</Text>
-                            : null
-                    }
+
                 </View>
 
                 <TouchableOpacity
-                    onPress={() => signup({ email, password, confirmPassword, handle })}
+                    onPress={checkInput}
                     style={styles.buttonContainer}>
                     <Text style={styles.buttonText}>SIGNUP</Text>
                 </TouchableOpacity>
@@ -197,10 +220,11 @@ const styles = StyleSheet.create({
         opacity: 0.7
     },
     error:{
-        color: theme.colors.secondary,
-        position: 'absolute',
-        right:5,
-        top: 11
+        color: '#FFF',
+        alignSelf:'center',
+        fontWeight:'bold',
+        padding: 16,
+        fontSize: 16
     }
 
 });

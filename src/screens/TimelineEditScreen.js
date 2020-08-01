@@ -8,14 +8,10 @@ import { Context as TimelineContext } from "../context/timelinesContext";
 
 const TimelineEditScreen = ({ navigation }) => {
 
-    // const id = navigation.getParam('id');
-    // console.log('id', id)
     const [title, setTitle] = useState(navigation.getParam('title'));
     const [description, setDescription] = useState(navigation.getParam('description'));
     const [id] = useState(navigation.getParam('id'));
     const { state, editTimeline } = useContext(TimelineContext);
-
-    console.log('state', state.loading);
 
     const checkInput = () => {
         if (title.trim().length === 0) {
@@ -23,7 +19,8 @@ const TimelineEditScreen = ({ navigation }) => {
         } else if (description.trim().length === 0) {
             Alert.alert('Please Enter Description');
         } else {
-            editTimeline({ id, title, description });
+            let timelineId = id;
+            editTimeline({ timelineId, title, description });
         }
     }
 
@@ -51,6 +48,7 @@ const TimelineEditScreen = ({ navigation }) => {
 
                         <TouchableOpacity
                             style={styles.buttonContainer}
+                            disabled={state.loading}
                             onPress={() => checkInput()}>
                             <Text style={styles.buttonText}>Edit Timeline</Text>
                         </TouchableOpacity>

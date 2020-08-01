@@ -8,6 +8,7 @@ import Block from '../elements/Block';
 import Spacer from '../elements/Spacer';
 import Timeline from 'react-native-timeline-flatlist';
 import { theme } from '../constants';
+import AddTimelineCard from '../components/cards/AddTimelineCard';
 
 // dayjs
 import dayjs from 'dayjs';
@@ -60,6 +61,20 @@ const TimelineDetailsScreen = ({ navigation }) => {
             return newArr;
         }
     };
+
+    TimelineDetailsScreen.navigationOptions = () => ({
+        title: 'New Timeline Card',
+        headerTintColor: '#FFF',
+        headerStyle: {
+            backgroundColor: '#3498db'
+        },
+        color: '#000',
+        headerRight: () => (
+            <View style={styles.icons}>
+                <AddTimelineCard />
+            </View>
+        ),
+    });
 
 
     const image = imageUrl

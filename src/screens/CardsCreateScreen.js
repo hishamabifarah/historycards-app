@@ -2,27 +2,31 @@ import React, { useState, useContext } from 'react'
 import {
     Text, StyleSheet, View, TouchableOpacity, TextInput, Button,
     ScrollView, ActivityIndicator, KeyboardAvoidingView, TouchableWithoutFeedback,
-    Alert , Keyboard
+    Alert, Keyboard
 } from 'react-native';
 import { Context as TimelineContext } from "../context/timelinesContext";
-
-const TimelineCreateScreen = () => {
+import DatePicker from 'react-native-datepicker';
+const CardsCreateScreen = () => {
 
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
+    const [source, setSource] = useState('');
+    const [date, setDate] = useState('');
 
     const { state, addNewTimeline } = useContext(TimelineContext);
     console.log('state', state.loading);
 
     const checkInput = () => {
-        if(title.trim().length === 0){ 
+        if (title.trim().length === 0) {
             Alert.alert('Please Enter Title');
-        }else if(description.trim().length === 0){
+        } else if (description.trim().length === 0) {
             Alert.alert('Please Enter Description');
-        }else{
-            addNewTimeline({title, description});
+        } else {
+            // addNewTimeline({title, description});
         }
     }
+
+
 
     return (
         <KeyboardAvoidingView style={styles.containerView}>
@@ -46,6 +50,36 @@ const TimelineCreateScreen = () => {
                             numberOfLines={10}
                             onChangeText={(text) => setDescription(text)} />
 
+                        <TextInput
+                            placeholder="Source"
+                            placeholdercolor="#c4c3cb"
+                            style={styles.loginFormTextInput}
+                            value={source}
+                            onChangeText={(text) => setSource(text)} />
+
+                        <DatePicker
+                            style={styles.datepicker}
+                            date={date}
+                            mode="date"
+                            placeholder="select date"
+                            format="YYYY-MM-DD"
+                            minDate="0001-01-01"
+                            maxDate="4000-01-01"
+                            confirmBtnText="Confirm"
+                            cancelBtnText="Cancel"
+                            customStyles={{
+                                dateIcon: {
+                                    position: 'absolute',
+                                    left: 0,
+                                    top: 4,
+                                    marginLeft: 0
+                                },
+                                dateInput: {
+                                    marginLeft: 36
+                                }
+                            }}
+                            onDateChange={(text) => setDate(text)} />
+                    
                         <TouchableOpacity
                             style={styles.buttonContainer}
                             disabled={state.loading}
@@ -59,11 +93,10 @@ const TimelineCreateScreen = () => {
                         }
 
                         {state.errors &&
-                                <View style={styles.errorContainer}>
-                                    <Text style={styles.errorText}>{state.errors}</Text>
-                                </View>
+                            <View style={styles.errorContainer}>
+                                <Text style={styles.errorText}>{state.errors}</Text>
+                            </View>
                         }
-
                     </View>
                 </View>
             </TouchableWithoutFeedback>
@@ -112,7 +145,7 @@ const styles = StyleSheet.create({
         marginLeft: 15,
         marginRight: 15,
         marginTop: 5,
-        marginBottom: 25,
+        marginBottom: 5
 
     },
     loginButton: {
@@ -145,11 +178,18 @@ const styles = StyleSheet.create({
     errorContainer: {
         alignItems: "center",
         padding: 10
-      },
-      errorText:{
-          fontWeight: 'bold',
-          color: '#ff3d00'
-      }
+    },
+    errorText: {
+        fontWeight: 'bold',
+        color: '#ff3d00'
+    },
+    datepicker:{
+        width: 300,
+        alignSelf:'center',
+        marginRight: 15,
+        marginTop: 5,
+        marginBottom: 20
+    }
 })
 
-export default TimelineCreateScreen;
+export default CardsCreateScreen;

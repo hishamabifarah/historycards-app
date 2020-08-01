@@ -1,4 +1,5 @@
 import React, { useContext, useState } from 'react'
+import { Alert } from 'react-native';
 import { Context as AuthContext } from "../context/authContext";
 import { theme } from '../constants'
 import NavLink from '../navigation/NavLink';
@@ -30,6 +31,16 @@ const SigninScreen = () => {
         clearErrorMessage();
     }
 
+    const checkInput = () => {
+        if (email.trim().length === 0) {
+            Alert.alert('Please Enter Email');
+        } else if (password.trim().length === 0) {
+            Alert.alert('Please Enter password');
+        } else {
+            signin({ email, password })
+        }
+    }
+
     return (
         <KeyboardAvoidingView style={styles.container}>
             <NavigationEvents
@@ -45,6 +56,14 @@ const SigninScreen = () => {
             </View>
 
             <View style={styles.buttonsContainer}>
+                {
+                    state.errors && state.errors.general &&
+                    <Text style={styles.error}>{state.errors.general}</Text>
+                }
+                {
+                    state.errors && state.errors.email &&
+                    <Text style={styles.error}>{state.errors.email}</Text>
+                }
                 <View>
                     <Icon style={styles.inputIcon} name={'mail-outline'} size={24} color={'rgb(255,255,255,0.7)'} />
                     <TextInput
@@ -79,14 +98,10 @@ const SigninScreen = () => {
                         maxLength={20}
                         onFocus= {() => onFocus()}
                     />
-                    {
-                        state.errros && state.errors.password
-                            ? <Text style={styles.error}>{state.errors.password}</Text>
-                            : null
-                    }
+
                 </View>
                 <TouchableOpacity
-                    onPress={() => signin({ email, password })}
+                    onPress={checkInput}
                     disabled={state.loading}
                     style={styles.buttonContainer}>
                     <Text style={styles.buttonText}>LOGIN</Text>
@@ -163,10 +178,11 @@ const styles = StyleSheet.create({
         opacity: 0.7
     },
     error: {
-        color: theme.colors.secondary,
-        position: 'absolute',
-        right: 5,
-        top: 11
+        color: '#FFF',
+        alignSelf:'center',
+        fontWeight:'bold',
+        padding: 16,
+        fontSize: 16
     }
 
 });

@@ -6,8 +6,19 @@
 ✔ 6. on signin notifications badge and add button  disappear after browsing fix @done (7/30/2020, 5:52:01 PM)
 ✔ 7. edit stars and likes in home page better design @done (7/30/2020, 4:55:19 PM)
 ✔ 8. Login error fix @done (7/30/2020, 5:51:49 PM)
-☐ 9. Mark notifications read
+✔ 9. Mark notifications read @done (8/1/2020, 5:54:04 PM)
 ☐ 10. Add Like Button to timeline card
 ☐ 11. Add all buttons and icons for timeline card (likes, comments count, bookmark...)
 ☐ 12. Add Edit Screen for timeline
 ☐ 13. Timelines all load more add loader and error handling
+✔ 14. Validate data login and signup with Alerts @done (8/1/2020, 5:15:23 PM)
+✔ 15. light status bar throught application @done (8/1/2020, 4:41:33 PM)
+☐ 16. Final test for auth route, login signup logout , check tokens and flow on sign in and esp. sign up
+✔ 17. disable create and edit timelines buttons on loading @done (8/1/2020, 6:20:46 PM)
+☐ 18. fix image not uploading when creating new timeline
+☐ 19. disable buttons on uploading image when uploading timeline image
+☐ 20. add editing image when editing timeline
+☐ 21. Finish loading timeline details with cards (x2)
+☐ 22. Implement add card to timeline
+☐ 23. Implement edit and delete card of timeline
+☐ 24. Implement like and dislike card

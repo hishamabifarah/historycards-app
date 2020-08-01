@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react'
-import { Text, View, ScrollView, TouchableOpacity , StyleSheet} from 'react-native';
+import { Text, View, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 import { Context as TimelineContext } from "../context/timelinesContext";
 import TimelinesAllList from '../components/timeline/TimelinesAllList';
 import Spacer from '../elements/Spacer';
@@ -14,12 +14,10 @@ const TimelineListAllScreen = () => {
         getTimelines(page);
     }
 
-    console.log('state all timelines screen' , state);
-
     return (
         <ScrollView>
             {state.loading
-                ? <Text>Loading</Text>
+                ? <ActivityIndicator style={{ paddingTop: 15 }} size="large" color="#00bcd4" />
                 : (
                     <View>
                 

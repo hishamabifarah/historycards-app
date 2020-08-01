@@ -6,8 +6,8 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 const LikeTimelineButton = ({ navigation , timelineId}) => {
 
-    const { state } = useContext(AuthContext);
-    const { likeTimeline, unlikeTimeline } = useContext(TimelineContext);
+    const { state , unlikeTimeline } = useContext(AuthContext);
+    const { likeTimeline } = useContext(TimelineContext);
 
     const likedTimeline = () => {
         if(state.likes && 

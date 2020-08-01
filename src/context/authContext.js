@@ -27,7 +27,16 @@ const authReducer = (state, action) => {
         case 'set_authenticated':
             return { ...state, authenticated: true }
         case 'set_user':
-            return { ...state ,  notifications: action.payload.notifications , authenticated: true , ...action.payload }
+            return { ...state ,  notifications: action.payload.notifications , authenticated: true , ...action.payload };
+        case 'MARK_NOTIFICATIONS_READ' :
+                state.notifications.forEach((notification) => (notification.read = true))
+                return { ...state };
+        case 'UNLIKE_TIMELINE': {
+            return {
+                ...state,
+                likes: state.likes.filter((like) => like.timelineId !== action.payload.timelineId)
+            }
+        }
         default:
             return state;
     }
@@ -160,6 +169,24 @@ const signout = dispatch => async () => {
     navigate('Splash');
 };
 
+const markNotificationsRead = dispatch => async ( notificationsId ) => {
+    console.log('auth unreadNotificationsIds' , notificationsId);
+
+    const token = await AsyncStorage.getItem('token');
+    try {
+        await historyCardsApi.post('/notifications', notificationsId, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        dispatch({ type: 'MARK_NOTIFICATIONS_READ' });
+
+    } catch (err) {
+        console.log('err: ', err);
+    }
+};
+
 const tryLocalSignin = (dispatch) => async () => {
    // console.log('tryLocalSignin() started');
     const token = await AsyncStorage.getItem('token');
@@ -253,9 +280,30 @@ const clearErrorMessage = dispatch => () => {
     dispatch({ type: 'clear_error_messages' })
 }
 
+const unlikeTimeline = dispatch => async ({ timelineId }) => {
+    try {
+        const token = await AsyncStorage.getItem('token');
+        const res = await historyCardsApi.get(`/timeline/${timelineId}/unlike`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        dispatch({
+            type: 'UNLIKE_TIMELINE',
+            payload: res.data
+        })
+
+    } catch (err) {
+        console.log('err unlike timeline ', err)
+    }
+};
+
 export const { Provider, Context } = createDataContext(
     authReducer,
-    { signin, signout, signup, clearErrorMessage, tryLocalSignin, tryLocalProfile, updateUserDetails },
+    {   signin, signout, signup, clearErrorMessage, tryLocalSignin, 
+        tryLocalProfile, updateUserDetails , markNotificationsRead,unlikeTimeline
+    },
     {
         errors: [],
         token: null,

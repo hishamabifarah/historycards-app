@@ -5,13 +5,16 @@ import { Badge, Icon } from 'react-native-elements';
 import { withNavigation } from 'react-navigation';
 
 const Notifications = ({ navigation }) => {
-    const { state } = useContext(AuthContext);
-    // console.log('auth state in notifications ' , state.authenticated);
-    // console.log(' state in notifications ' , state);
+    const { state, markNotificationsRead } = useContext(AuthContext);
+
     const checkIfAuthenticated = () => {
-        if(state.authenticated){
+        if (state.authenticated) {
             navigation.navigate('Notifications');
-        }else{
+            let unreadNotificationsIds = state.notifications
+                .filter(n => !n.read)
+                .map(n => n.notificationId);
+            markNotificationsRead(unreadNotificationsIds);
+        } else {
             navigation.navigate('Splash');
         }
     }
@@ -23,19 +26,17 @@ const Notifications = ({ navigation }) => {
                     <Icon
                         type="ionicon"
                         name="ios-notifications"
-                        // onPress={() => navigation.navigate('Notifications')}
                         onPress={checkIfAuthenticated}
                         size={28} color='#fff' />
 
                     {
-                        state.notifications && state.notifications.length > 0
+                        state.notifications && state.notifications.filter(n => !n.read).length > 0
                             ?
                             <Badge
                                 value={state.notifications.filter(n => n.read === false).length}
                                 status="error"
                                 containerStyle={styles.badgeStyle}
                             />
-
                             : null
                     }
                 </View>

@@ -3,7 +3,7 @@ import React from 'react';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
-
+import { StatusBar } from 'react-native';
 // SCREENS
 import SigninScreen from './src/screens/SigninScreen';
 import SignupScreen from './src/screens/SignupScreen';
@@ -20,14 +20,14 @@ import ProfileEditDetailsScreen from './src/screens/ProfileEditDetailsScreen';
 import TimelineAddImageScreen from './src/screens/TimelineAddImageScreen';
 import NotificationsScreen from './src/screens/NotificationsScreen';
 import TimelineDetailScreenByID from './src/screens/TimelineDetailScreenByID';
+import CardsCreateScreen from './src/screens/CardsCreateScreen';
+
 // CONTEXT
 import { Provider as AuthProvider } from './src/context/authContext';
 import { Provider as TimelineProvider } from './src/context/timelinesContext';
-
 // NAVIGATION 
 import { setNavigator } from './src/navigation/navigationRef';
 import Icon from 'react-native-vector-icons/Ionicons';
-
 // FONTS & ICONS 
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
@@ -47,7 +47,12 @@ const switchNavigator = createSwitchNavigator({
     timelineFlow: createStackNavigator({
       TimelinesHome: TimelinesHomeScreen,
       TimelineDetail: TimelineDetailsScreen,
-      TimelineEdit: TimelineEditScreen,
+      TimelineEdit: {
+        screen: TimelineEditScreen,
+        navigationOptions:{
+          title: 'Edit Timeline'
+        }
+      },
       Notifications: NotificationsScreen,
       TimelineDetailScreenByID: {
         screen: TimelineDetailScreenByID,
@@ -78,6 +83,10 @@ const switchNavigator = createSwitchNavigator({
         navigationOptions: {
           title: 'Edit Profile'
         }
+      },
+      CardsCreate:{
+        screen: CardsCreateScreen,
+        title: 'Create New Card'
       }
     }, {
       navigationOptions: {
@@ -122,9 +131,13 @@ export default () => {
     return (
       <TimelineProvider>
         <AuthProvider>
+          <StatusBar
+            barStyle="light-content"
+            backgroundColor="#3498db"
+          />
           <App ref={(navigator) => setNavigator(navigator)} />
         </AuthProvider>
-      </TimelineProvider >
+      </TimelineProvider>
     );
   }
 };

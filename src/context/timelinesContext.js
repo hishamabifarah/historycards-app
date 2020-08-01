@@ -143,13 +143,13 @@ const timelineReducer = (state, action) => {
             };
 
             case 'EDIT_TIMELINE': {
-                let indexUpdate = state.timelines.findIndex((timeline) => timeline.timelineId === action.payload.timelineId);
-    
-                state.timelines[indexUpdate].title = action.payload.title
-                state.timelines[indexUpdate].description = action.payload.description;
+                let indexUpdate = state.timelines.findIndex((timeline) => timeline.timelineId === action.payload.resTimeline.timelineId);
+                state.timelines[indexUpdate].title = action.payload.resTimeline.title
+                state.timelines[indexUpdate].description = action.payload.resTimeline.description;
     
                 return {
-                    ...state
+                    ...state,
+                    loading: false 
                 }
             }
         case 'SET_ACTIVITIES':
@@ -163,14 +163,13 @@ const timelineReducer = (state, action) => {
 
             let index = state.timelines.findIndex((timeline) => timeline.timelineId === action.payload.timelineId);
             console.log('index reducer ', index)
-            state.timelines[index] = action.payload;
+           
             console.log('payload ', action.payload)
 
             console.log('state timeline', state.timeline)
-            if (state.timeline.timelineId === action.payload.timelineId) {
+            if (state.timelines[index].timelineId === action.payload.timelineId) {
                 console.log('inside if')
-                timeline = action.payload;
-                likes = [...state.likes, { userHandle: 'hisham', timelineId: action.payload.timelineId }]
+                state.timelines[index] = action.payload;
             }
 
             return {
@@ -185,9 +184,6 @@ const timelineReducer = (state, action) => {
             state.timelines[index].likeCount = action.payload.likeCount;
             if (state.timeline.timelineId === action.payload.timelineId)
                 state.timeline = { ...state.timeline, ...action.payload };
-            return {
-                ...state
-            };
         }
 
         case 'FAVORITE_TIMELINE': {
@@ -216,6 +212,7 @@ const timelineReducer = (state, action) => {
 };
 
 const getTimelines = (dispatch) => async (page) => {
+    dispatch({ type: 'LOADING_DATA_UI' })
     try {
         const response = await historyCardsApi.get(`/timelinesp/${page}`)
         dispatch({
@@ -292,7 +289,6 @@ const getTimelineCards = dispatch => async (id, page) => {
 
 // Add New Timeline
 const addNewTimeline = dispatch => async ({ title, description }) => {
-    console.log('adding new timeline');
     dispatch({ type: 'LOADING_DATA_UI' })
     const token = await AsyncStorage.getItem('token');
 
@@ -396,24 +392,24 @@ const likeTimeline = dispatch => async ({ timelineId }) => {
 };
 
 // Unlike a timeline
-const unlikeTimeline = dispatch => async ({ timelineId }) => {
-    try {
-        const token = await AsyncStorage.getItem('token');
-        const res = await historyCardsApi.get(`/timeline/${timelineId}/unlike`, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
+// const unlikeTimeline = dispatch => async ({ timelineId }) => {
+//     try {
+//         const token = await AsyncStorage.getItem('token');
+//         const res = await historyCardsApi.get(`/timeline/${timelineId}/unlike`, {
+//             headers: {
+//                 'Authorization': `Bearer ${token}`
+//             }
+//         });
 
-        dispatch({
-            type: 'UNLIKE_TIMELINE',
-            payload: res.data
-        })
+//         dispatch({
+//             type: 'UNLIKE_TIMELINE',
+//             payload: res.data
+//         })
 
-    } catch (err) {
-        console.log('err unlike timeline ', err)
-    }
-};
+//     } catch (err) {
+//         console.log('err unlike timeline ', err)
+//     }
+// };
 
 // Favorite a timeline
 const favoriteTimeline = dispatch => async ({ timelineId }) => {
@@ -457,7 +453,7 @@ const unfavoriteTimeline = dispatch => async ({ timelineId }) => {
 
 // Edit a timeline
 const editTimeline = dispatch => async ({timelineId, title, description}) => {
-    console.log('id in context' , timelineId);
+    dispatch({ type: 'LOADING_DATA_UI' })
     try {
 
         const editedTimeline = {
@@ -513,7 +509,7 @@ export const { Provider, Context } = createDataContext(
     {
         getTimelines, getTimelineCards, getTimelineFavorites,
         addNewTimeline, uploadImageTimeline, getRecentActivities, getTimelineById,
-        likeTimeline, unlikeTimeline, favoriteTimeline, unfavoriteTimeline, deleteTimeline , editTimeline
+        likeTimeline, favoriteTimeline, unfavoriteTimeline, deleteTimeline , editTimeline
     },
     {
         errors: [],
