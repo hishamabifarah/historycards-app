@@ -6,27 +6,40 @@ import {
 } from 'react-native';
 import { Context as TimelineContext } from "../context/timelinesContext";
 import DatePicker from 'react-native-datepicker';
-const CardsCreateScreen = () => {
+const CardsCreateScreen = ({navigation}) => {
 
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [source, setSource] = useState('');
-    const [date, setDate] = useState('');
 
-    const { state, addNewTimeline } = useContext(TimelineContext);
-    console.log('state', state.loading);
+    const [date, setDate] = useState(new Date());
+    const handleChange = date => setDate(date);
+
+    const { state, addTimelineCard } = useContext(TimelineContext);
+
+    console.log('state loading', state.loading);
+  
 
     const checkInput = () => {
+        let convertDateToISOString = date.toISOString;
         if (title.trim().length === 0) {
             Alert.alert('Please Enter Title');
         } else if (description.trim().length === 0) {
             Alert.alert('Please Enter Description');
-        } else {
-            // addNewTimeline({title, description});
+        }else if(source.trim().length ===0 ){
+            Alert.alert('Please Enter Source');
+        } 
+        // else if(date.trim().length === 0){
+        //     Alert.alert('Please Enter Date');
+        // }
+        else {
+            let id =  navigation.getParam('timelineId');
+          
+            console.log('id in create screen and date' , id);
+            console.log('date in create screen' , date);
+            addTimelineCard({ title, description, date, source, id });
         }
     }
-
-
 
     return (
         <KeyboardAvoidingView style={styles.containerView}>
@@ -60,6 +73,7 @@ const CardsCreateScreen = () => {
                         <DatePicker
                             style={styles.datepicker}
                             date={date}
+                            selected={date}
                             mode="date"
                             placeholder="select date"
                             format="YYYY-MM-DD"
@@ -78,13 +92,14 @@ const CardsCreateScreen = () => {
                                     marginLeft: 36
                                 }
                             }}
-                            onDateChange={(text) => setDate(text)} />
+                            onDateChange={handleChange}/>
+                            {/* onDateChange={(text) => setDate(text)}  */}
                     
                         <TouchableOpacity
                             style={styles.buttonContainer}
                             disabled={state.loading}
                             onPress={() => checkInput()}>
-                            <Text style={styles.buttonText}>Create Timeline</Text>
+                            <Text style={styles.buttonText}>Create Card</Text>
                         </TouchableOpacity>
 
                         {state.loading ? (

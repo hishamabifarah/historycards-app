@@ -1,14 +1,12 @@
 import React, { useContext } from 'react'
-import { StyleSheet, Alert } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { Context as AuthContext } from "../../context/authContext";
-import { Context as TimelineContext } from "../../context/timelinesContext";
 import { withNavigation } from 'react-navigation';
 import { FontAwesome } from '@expo/vector-icons';
 
 const EditTimelineButton = ({ navigation, timelineId, userHandle , title, description }) => {
 
     const { state } = useContext(AuthContext);
-    const { deleteTimeline } = useContext(TimelineContext);
 
     // console.log('state in EditTimelineButton' , state);
 

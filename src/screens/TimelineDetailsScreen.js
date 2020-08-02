@@ -25,7 +25,7 @@ const TimelineDetailsScreen = ({ navigation }) => {
 
     const { state, getTimelineCards } = useContext(TimelineContext);
 
-    console.log('state in TimelineDetailsScreen ' , state);
+    // console.log('state in TimelineDetailsScreen ' , state);
 
     const [page, setPage] = useState(state.page)
 
@@ -62,16 +62,19 @@ const TimelineDetailsScreen = ({ navigation }) => {
         }
     };
 
+    const timelineInd = id;
+
     TimelineDetailsScreen.navigationOptions = () => ({
-        title: 'New Timeline Card',
+        title: 'Timeline Details',
         headerTintColor: '#FFF',
         headerStyle: {
             backgroundColor: '#3498db'
         },
         color: '#000',
         headerRight: () => (
+            
             <View style={styles.icons}>
-                <AddTimelineCard />
+                <AddTimelineCard timelineId = {timelineInd}/>
             </View>
         ),
     });

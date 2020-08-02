@@ -206,10 +206,49 @@ const timelineReducer = (state, action) => {
             };
         }
 
+        case 'POST_CARD' : {
+            if (!state.timeline.cards) {
+
+                return {
+                    ...state,
+                    timeline: {
+                        ...state.timeline,
+                        cards: [action.payload]
+                    },
+                    errorLikeCards: '',
+                    loading: false
+                };
+            } else {
+
+                state.timeline.cards.unshift(action.payload);
+
+                return {
+                    ...state,
+                    timeline: {
+                        ...state.timeline,
+                        cards: [...state.timeline.cards]
+                    },
+                    errorLikeCards: '',
+                    loading: false
+                };
+        }
+    };
+
+    case 'ADD_CARD_ERROR':{
+        return {
+            ...state,
+            loading: false
+        }
+    }
+
         default:
             return state;
     }
 };
+
+/*============================
+    TIMELINES DATA ACTIONS
+==============================*/
 
 const getTimelines = (dispatch) => async (page) => {
     dispatch({ type: 'LOADING_DATA_UI' })
@@ -503,13 +542,60 @@ const deleteTimeline = dispatch => async ({ timelineId }) => {
     }
 };
 
+/*============================
+    CARDS DATA ACTIONS
+==============================*/
+
+const addTimelineCard = dispatch => async ({title, description, date , source , id}) => {
+    console.log('add card id  ' , id);
+    console.log('add card date  ' , date);
+    dispatch({ type: 'LOADING_DATA_UI' })
+    const token = await AsyncStorage.getItem('token');
+
+    const newTimeline = {
+        "title": title,
+        "body": description,
+        "cardDate": date,
+        "source" : source
+    };
+
+    console.log('new Timeline' , newTimeline);
+
+    try {
+        const res = await historyCardsApi.post(`/timeline/${id}/comment`, newTimeline, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        dispatch({
+            type: 'POST_CARD',
+            payload: res.data
+        })
+
+        navigate('TimelineDetailScreenByID',
+        {
+            id: res.data.timelineId
+        })
+
+    } catch (err) {
+        console.log('err add card' , err);
+        dispatch({
+            type: 'ADD_CARD_ERROR',
+            payload: null
+        })
+    }
+
+};
+
 
 export const { Provider, Context } = createDataContext(
     timelineReducer,
     {
         getTimelines, getTimelineCards, getTimelineFavorites,
         addNewTimeline, uploadImageTimeline, getRecentActivities, getTimelineById,
-        likeTimeline, favoriteTimeline, unfavoriteTimeline, deleteTimeline , editTimeline
+        likeTimeline, favoriteTimeline, unfavoriteTimeline, deleteTimeline , editTimeline,
+        addTimelineCard
     },
     {
         errors: [],
@@ -520,6 +606,7 @@ export const { Provider, Context } = createDataContext(
         activities: [],
         timeline: {},
         errorsMainTimeline: '',
-        errorsPaginateTimeline: ''
+        errorsPaginateTimeline: '',
+        errorLikeCards: ''
     }
 );

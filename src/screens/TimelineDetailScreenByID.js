@@ -19,7 +19,7 @@ const TimelineDetailScreenByID = ({ navigation }) => {
     const id = navigation.getParam('id');
     const { state, getTimelineById , clearCards } = useContext(TimelineContext);
 
-    console.log('state Timeline Details: ', state);
+    // console.log('state Timeline Details: ', state);
     dayjs.extend(relativeTime);
     useEffect(() => {
         getTimelineById(id);
