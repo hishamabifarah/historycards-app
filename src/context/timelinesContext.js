@@ -37,7 +37,7 @@ const timelineReducer = (state, action) => {
                 }
             }
 
-        case 'SET_TIMELINE':
+        case 'SET_TIMELINE_DETAILS':
             if (action.payload === 'paginateError' || action.payload === null) {
                 return {
                     ...state,
@@ -103,13 +103,12 @@ const timelineReducer = (state, action) => {
             }
 
 
-        case 'SET_TIMELINE_DETAILS':
-            return {
-                ...state,
-                timeline: action.payload.timeline,
-                cards: action.payload,
-                loading: false
-            };
+        // case 'SET_TIMELINE_DETAILS':
+        //     return {
+        //         ...state,
+        //         timeline: action.payload.timeline,
+        //         loading: false
+        //     };
 
         case 'POST_TIMELINE': {
             return {
@@ -302,8 +301,10 @@ const getTimelineById = dispatch => async (id, page) => {
         })
         dispatch({ type: 'STOP_LOADING_DATA_UI' })
     } catch (err) {
-        // handle state with errors
-        console.log('error getting timeline cards: ', err)
+        dispatch({
+            type: 'SET_TIMELINE_DETAILS',
+            payload: null
+        })
     }
 };
 

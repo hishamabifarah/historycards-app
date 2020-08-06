@@ -32,13 +32,21 @@ const TimelinesLatestList = ({ title, timelines, navigation }) => {
                 keyExtractor={(timeline) => timeline.timelineId}
                 renderItem={({ item }) => {
                     return (
+                        
+                        // <TouchableOpacity onPress={() =>
+                        //     navigation.navigate('TimelineDetail',
+                        //         {
+                        //             id: item.timelineId,
+                        //             title: item.title,
+                        //             description: item.description,
+                        //             image: item.imageUrl
+                        //         })}>
+                        //     <ResultsDetail result={item} />
+                        // </TouchableOpacity>
                         <TouchableOpacity onPress={() =>
-                            navigation.navigate('TimelineDetail',
+                            navigation.navigate('TimelineDetailScreenByID',
                                 {
                                     id: item.timelineId,
-                                    title: item.title,
-                                    description: item.description,
-                                    image: item.imageUrl
                                 })}>
                             <ResultsDetail result={item} />
                         </TouchableOpacity>
