@@ -21,6 +21,8 @@ import TimelineAddImageScreen from './src/screens/TimelineAddImageScreen';
 import NotificationsScreen from './src/screens/NotificationsScreen';
 import TimelineDetailScreenByID from './src/screens/TimelineDetailScreenByID';
 import CardsCreateScreen from './src/screens/CardsCreateScreen';
+import TimelineListAllCardsScreen from './src/screens/TimelineListAllCardsScreen';
+import TimelineEditCardScreen from './src/screens/TimelineEditCardScreen';
 
 // CONTEXT
 import { Provider as AuthProvider } from './src/context/authContext';
@@ -78,6 +80,12 @@ const switchNavigator = createSwitchNavigator({
           title: 'Timelines'
         }
       },
+      TimelineListAllCards:{
+        screen: TimelineListAllCardsScreen,
+        navigationOptions: {
+          title: 'Timeline Cards'
+        }
+      },
       ProfileEditDetails: {
         screen: ProfileEditDetailsScreen,
         navigationOptions: {
@@ -87,7 +95,11 @@ const switchNavigator = createSwitchNavigator({
       CardsCreate:{
         screen: CardsCreateScreen,
         title: 'Create New Card'
-      }
+      },
+      TimelineEditCard : {
+        screen: TimelineEditCardScreen,
+        title: 'Edit Card'
+      },
     }, {
       navigationOptions: {
         tabBarLabel: 'Home',

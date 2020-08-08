@@ -238,8 +238,46 @@ const timelineReducer = (state, action) => {
             ...state,
             loading: false
         }
+    };
+
+    case 'EDIT_CARD': {
+        let indexUpdate = state.timeline.cards.findIndex((card) => card.cardId === action.payload.cardId);
+
+        state.timeline.cards[indexUpdate].title = action.payload.title
+        state.timeline.cards[indexUpdate].body = action.payload.body;
+        state.timeline.cards[indexUpdate].source = action.payload.source;
+        state.timeline.cards[indexUpdate].cardDate = action.payload.cardDate;
+
+        return {
+            ...state,
+            loading:false,
+            errorLikeCards: ''
+        }
     }
 
+    case 'DELETE_CARD': {
+        let index = state.timeline.cards.findIndex((card) => card.cardId === action.payload);
+        state.timeline.cards.splice(index, 1);
+
+        return {
+            ...state
+            ,
+            timeline: {
+                ...state.timeline,
+                cards: [...state.timeline.cards]
+            },
+            errorLikeCards: ''
+        }
+    };
+
+    case 'SET_RATINGS':{
+        return {
+            ...state,
+            ...action.payload,
+            loading: false
+        }
+    }
+        
         default:
             return state;
     }
@@ -299,7 +337,17 @@ const getTimelineById = dispatch => async (id, page) => {
             type: 'SET_TIMELINE_DETAILS',
             payload: response.data
         })
+
+
+        const res = await historyCardsApi.get(`ratings/${id}`);
+        if (res.data) {
+            dispatch({
+                type: 'SET_RATINGS',
+                payload: res.data
+            })
+        }
         dispatch({ type: 'STOP_LOADING_DATA_UI' })
+
     } catch (err) {
         dispatch({
             type: 'SET_TIMELINE_DETAILS',
@@ -307,6 +355,24 @@ const getTimelineById = dispatch => async (id, page) => {
         })
     }
 };
+
+const getTimelineRatings = dispatch => async (timelineId) => {
+    console.log('getting ratings with id' , timelineId);
+    try{
+
+        const res = historyCardsApi.get('/ratings/' + timelineId)
+        if (res.data) {
+            dispatch({
+                type: 'SET_RATINGS',
+                payload: res.data
+            })
+        }
+        dispatch({ type: 'STOP_LOADING_DATA_UI' })
+
+    }catch(err){
+        console.log('err getting ratings' , err)
+    }
+}
 
 const getTimelineCards = dispatch => async (id, page) => {
     // console.log('page in context cards' , page);
@@ -589,6 +655,58 @@ const addTimelineCard = dispatch => async ({title, description, date , source , 
 
 };
 
+// Edit card
+const editTimelineCard = dispatch => async({timelineId, cardId, title, body, cardDate, source}) => {
+    dispatch({ type: 'LOADING_DATA_UI' })
+    try {
+
+        const editedTimelineCard = {
+            "title": title,
+            "body": body,
+            "cardDate" : cardDate,
+            "source" : source
+        };
+
+        const token = await AsyncStorage.getItem('token');
+        const res = await historyCardsApi.post('/timeline/'+timelineId+'/'+cardId+'/edit', editedTimelineCard , {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        dispatch({
+            type: 'EDIT_CARD',
+            payload: res.data.card
+        });
+
+        navigate('TimelineListAllCards' , {
+            id: timelineId
+        });
+
+    } catch (err) {
+        console.log('err edit timeline ', err)
+    }
+}
+
+// Delete a card
+const deleteTimelineCard = dispatch => async ({ timelineId , cardId }) => {
+    try {
+        const token = await AsyncStorage.getItem('token');
+        await historyCardsApi.delete(`/timeline/${timelineId}/${cardId}/delete`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        dispatch({
+            type: 'DELETE_CARD',
+            payload: cardId
+        });
+
+    } catch (err) {
+        console.log('err deleteTimelineCard  ', err)
+    }
+};
 
 export const { Provider, Context } = createDataContext(
     timelineReducer,
@@ -596,7 +714,7 @@ export const { Provider, Context } = createDataContext(
         getTimelines, getTimelineCards, getTimelineFavorites,
         addNewTimeline, uploadImageTimeline, getRecentActivities, getTimelineById,
         likeTimeline, favoriteTimeline, unfavoriteTimeline, deleteTimeline , editTimeline,
-        addTimelineCard
+        addTimelineCard , deleteTimelineCard , editTimelineCard
     },
     {
         errors: [],

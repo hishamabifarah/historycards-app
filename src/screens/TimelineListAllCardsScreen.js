@@ -3,25 +3,21 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Text, StyleSheet, ScrollView, Image, Dimensions, View, ActivityIndicator, TouchableOpacity } from 'react-native';
 // import { NavigationEvents } from 'react-navigation';
 import { Context as TimelineContext } from "../context/timelinesContext";
-import Timeline from 'react-native-timeline-flatlist';
 // Components
-import Block from '../elements/Block';
-import AddTimelineCard from '../components/cards/AddTimelineCard';
-import EditTimelineCard from '../components/cards/EditTimelineCard';
 // dayjs
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 // Constants
 import { theme } from '../constants';
 import Spacer from '../elements/Spacer';
+import CardsAllList from '../components/cards/CardsAllList';
 const { width: WIDTH } = Dimensions.get('window');
 
-const TimelineDetailScreenByID = ({ navigation }) => {
+const TimelineListAllCardsScreen = ({ navigation }) => {
 
     const id = navigation.getParam('id');
     const { state, getTimelineById } = useContext(TimelineContext);
-
-    console.log('state Timeline Details: ', state);
+    
     dayjs.extend(relativeTime);
 
     const [page, setPage] = useState(state.page)
@@ -42,42 +38,14 @@ const TimelineDetailScreenByID = ({ navigation }) => {
         getTimelineById(id, page);
     }
 
-    const createTimelineArray = (arr) => {
-        if (arr && arr.length > 0) {
-            let newArr = [];
-            for (let i = 0; i < arr.length; i++) {
-                let newValArr = {
-                    "time": dayjs(arr[i].cardDate).format('MM/DD/YYYY'),
-                    "title": arr[i].title,
-                    "description": arr[i].body
-                }
-                newArr.push(newValArr)
-            }
-            return newArr;
-        }
-    };
-
-    TimelineDetailScreenByID.navigationOptions = () => ({
+    TimelineListAllCardsScreen.navigationOptions = () => ({
         title: 'Timeline Details',
         headerTintColor: '#FFF',
         headerStyle: {
             backgroundColor: '#3498db'
         },
-        color: '#000',
-        headerRight: () => (
-            <View style={styles.icons}>
-                <EditTimelineCard timelineId = {id} />
-                <AddTimelineCard timelineId = {id}/>
-            </View>
-        ),
+        color: '#000'
     });
-
-    // get one from assets
-    const noImageUri = 'https://pianomaster.ie/wp-content/uploads/2019/04/no-image.jpg';
-
-    const image = state.timeline.imageUrl
-        ? <Image style={styles.image} source={{ uri: state.timeline.imageUrl }} />
-        : <Image style={styles.image} source={{ uri: noImageUri }} />
 
     return (
 
@@ -86,39 +54,9 @@ const TimelineDetailScreenByID = ({ navigation }) => {
                 ? <ActivityIndicator style={{ paddingTop: 15 }} size="large" color="#00bcd4" />
                 : (
                     <View>
-                        <Block>
-                            {image}
-                            <Text style={styles.title}>{state.timeline.title}</Text>
-                            <Text style={styles.description}>
-                                {state.timeline.description}
-                            </Text>
-                        </Block>
-
                         <Text style={styles.title}>Cards</Text>
+                        <CardsAllList cards={state.timeline.cards} />
 
-                        
-                        <Timeline
-                            style={styles.list}
-                            data={createTimelineArray(state.timeline.cards)}
-                            circleSize={16}
-                            circleColor='rgb(45,156,219)'
-                            seperator={true}
-                            lineColor='rgb(45,156,219)'
-                            timeContainerStyle={{ minWidth: 72, marginTop: 0, marginLeft: 2, marginRight: 2 }}
-                            timeStyle={{
-                                textAlign: 'left',
-                                backgroundColor: '#ff9797',
-                                color: 'white',
-                                padding: 8,
-                                borderRadius: 14
-                            }}
-                            descriptionStyle={{ color: 'gray' }}
-                            options={{
-                                style: { paddingTop: 5 },
-                            }}
-                            innerCircle={'dot'}
-                            onPress={() => console.log('pressed')}
-                        />
                     </View>
                 )
             }
@@ -198,4 +136,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default TimelineDetailScreenByID;
+export default TimelineListAllCardsScreen;
