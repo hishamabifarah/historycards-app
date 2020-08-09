@@ -31,16 +31,38 @@ const authReducer = (state, action) => {
         case 'MARK_NOTIFICATIONS_READ' :
                 state.notifications.forEach((notification) => (notification.read = true))
                 return { ...state };
-        case 'UNLIKE_TIMELINE': {
+        case 'LIKE_TIMELINE':
             return {
                 ...state,
-                likes: state.likes.filter((like) => like.timelineId !== action.payload.timelineId)
-            }
-        }
+                // spread the likes and add a new one on like
+                likes: [
+                    ...state.likes,
+                    {
+                        userHandle: action.payload.handle,
+                        timelineId: action.payload.id
+                    }
+                ]
+            };
         default:
             return state;
     }
 };
+
+const clearLikes = dispatch => ({id, handle}) =>{
+    console.log('clear likes id and handle' , id + ' - ' + handle);
+
+
+    const payload2 ={
+        "id" : id,
+        "handle" : handle
+     }
+
+
+    dispatch({
+        type: 'LIKE_TIMELINE',
+        payload : payload2
+    })
+}
 
 const signup = (dispatch) => async ({ email, password, confirmPassword, handle }) => {
     Keyboard.dismiss();
@@ -57,7 +79,6 @@ const signup = (dispatch) => async ({ email, password, confirmPassword, handle }
             "handle": handle
         };
 
-        // console.log('newUserData: ', newUserData);
         const response = await historyCardsApi.post('/signup', newUserData);
         await AsyncStorage.setItem('token', response.data.tokenId);
 
@@ -92,8 +113,6 @@ const signin = (dispatch) => async ({ email, password }) => {
             payload: response.data.token
         });
 
-        console.log('getting user data in signin ()');
-        // getUserData(response.data.token);
         try {
             const res = await historyCardsApi.get('/user', {
                 headers: {
@@ -140,8 +159,6 @@ const updateUserDetails = (dispatch) => async ({ facebook, twitter, website, loc
         "bio": bio ? bio : '',
     };
 
-  //  console.log('upading user details with ', JSON.stringify(newUserData));
-
     try {
         await historyCardsApi.post('/user', newUserData, {
             headers: {
@@ -163,15 +180,12 @@ const updateUserDetails = (dispatch) => async ({ facebook, twitter, website, loc
 };
 
 const signout = dispatch => async () => {
-    // console.log('signout() started');
     await AsyncStorage.removeItem('token');
     dispatch({ type: 'signout' });
     navigate('Splash');
 };
 
 const markNotificationsRead = dispatch => async ( notificationsId ) => {
-    console.log('auth unreadNotificationsIds' , notificationsId);
-
     const token = await AsyncStorage.getItem('token');
     try {
         await historyCardsApi.post('/notifications', notificationsId, {
@@ -188,7 +202,6 @@ const markNotificationsRead = dispatch => async ( notificationsId ) => {
 };
 
 const tryLocalSignin = (dispatch) => async () => {
-   // console.log('tryLocalSignin() started');
     const token = await AsyncStorage.getItem('token');
     if (token) {
         // copied  getUserData() here because couldn't get getUserData() to be called with dispatch 
@@ -280,29 +293,10 @@ const clearErrorMessage = dispatch => () => {
     dispatch({ type: 'clear_error_messages' })
 }
 
-const unlikeTimeline = dispatch => async ({ timelineId }) => {
-    try {
-        const token = await AsyncStorage.getItem('token');
-        const res = await historyCardsApi.get(`/timeline/${timelineId}/unlike`, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-
-        dispatch({
-            type: 'UNLIKE_TIMELINE',
-            payload: res.data
-        })
-
-    } catch (err) {
-        console.log('err unlike timeline ', err)
-    }
-};
-
 export const { Provider, Context } = createDataContext(
     authReducer,
     {   signin, signout, signup, clearErrorMessage, tryLocalSignin, 
-        tryLocalProfile, updateUserDetails , markNotificationsRead,unlikeTimeline
+        tryLocalProfile, updateUserDetails , markNotificationsRead , clearLikes
     },
     {
         errors: [],

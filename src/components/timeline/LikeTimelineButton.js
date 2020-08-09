@@ -6,18 +6,22 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 const LikeTimelineButton = ({ navigation , timelineId}) => {
 
-    const { state , unlikeTimeline } = useContext(AuthContext);
-    const { likeTimeline } = useContext(TimelineContext);
+    const { state , clearLikes  } = useContext(AuthContext);
+    const { likeTimeline ,unlikeTimeline } = useContext(TimelineContext);
+
+    console.log('statein likedtimelinebutton' , state.credentials);
 
     const likedTimeline = () => {
-        if(state.likes && 
-            state.likes.find(
-                (like) => like.timelineId === timelineId
-            )    
-        )
-        return true;
+        if (state.likes && state.likes.find((like) => like.timelineId === timelineId))
+            return true;
         else return false;
-    
+    }
+
+    const testLike = async () => {
+        await likeTimeline({timelineId})
+        const handle = 'hisham'
+        const id = timelineId
+        clearLikes({id , handle});
     }
 
     const likeButton =
@@ -40,7 +44,7 @@ const LikeTimelineButton = ({ navigation , timelineId}) => {
                 style={{ marginRight: 3, marginLeft: 3 }}
                 name={'md-heart-empty'}
                 color={'#3498db'}
-                onPress={() => likeTimeline({timelineId})}
+                onPress={() => testLike()}
                 size={20} />
                 )
 

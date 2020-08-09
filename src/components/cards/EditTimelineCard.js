@@ -8,8 +8,6 @@ const EditTimelineCard = ({ navigation , timelineId}) => {
 
     const { state } = useContext(AuthContext);
 
-    // console.log('state in EditTimelineCard' , state);
-
     const editButton =
         state.authenticated ?
             <FontAwesome

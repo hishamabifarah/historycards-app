@@ -1,17 +1,17 @@
 import React, { useContext } from 'react'
 import { Context as AuthContext } from "../../context/authContext";
+import { Context as TimelineContext } from '../../context/timelinesContext';
+import { withNavigation } from 'react-navigation';
 import { Foundation } from '@expo/vector-icons';
 
-const LikeTimelineCardButton = () => {
+const LikeTimelineCardButton = ({ handle, id , navigation }) => {
 
-    const { state } = useContext(AuthContext);
+    const { state: { authenticated } } = useContext(AuthContext);
+    const { state: { ratings } } = useContext(TimelineContext);
 
-    console.log('state in like card' , state.ratings)
-
-    const likedTimelineCard = ({ handle, id }) => {
-
-        if (state.ratings && state.ratings.length > 0) {
-            let userRatings = state.ratings.filter(like =>
+    const likedTimelineCard = () => {
+        if (ratings && ratings.length > 0) {
+            let userRatings = ratings.filter(like =>
                 like.userHandle === handle &&
                 like.cardId === id);
 
@@ -37,11 +37,21 @@ const LikeTimelineCardButton = () => {
         }
     }
     return (
-        likedTimelineCard() ?
-            <Foundation name="like" size={24} color="red" />
-            :
-            <Foundation name="like" size={24} color="red" />
+        !authenticated ? (
+            <Foundation
+                name="like"
+                size={26}
+                color="grey" />
+        ) : likedTimelineCard() ? (
+            <Foundation
+                name="like"
+                size={26}
+                color={'#3498db'}  />
+        ) : <Foundation
+                name="like"
+                size={26}
+                color="grey" />
     )
 };
 
-export default LikeTimelineCardButton;
+export default withNavigation(LikeTimelineCardButton);

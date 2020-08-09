@@ -133,24 +133,31 @@ const timelineReducer = (state, action) => {
             };
 
         case 'UPLOAD_IMAGE_TIMELINE':
-            let indexUpdateImage = state.timelines.findIndex((timeline) => timeline.timelineId === action.payload.timelineId);
-
-            state.timelines[indexUpdateImage].imageUrl = action.payload.image
-
-            return {
-                ...state
-            };
-
-            case 'EDIT_TIMELINE': {
-                let indexUpdate = state.timelines.findIndex((timeline) => timeline.timelineId === action.payload.resTimeline.timelineId);
-                state.timelines[indexUpdate].title = action.payload.resTimeline.title
-                state.timelines[indexUpdate].description = action.payload.resTimeline.description;
-    
+            if (action.payload === null) {
                 return {
                     ...state,
-                    loading: false 
-                }
+                    loading: false
+                };
+            } else {
+                let indexUpdateImage = state.timelines.findIndex((timeline) => timeline.timelineId === action.payload.timelineId);
+
+                state.timelines[indexUpdateImage].imageUrl = action.payload.image
+
+                return {
+                    ...state,
+                    loading: false
+                };
             }
+        case 'EDIT_TIMELINE': {
+            let indexUpdate = state.timelines.findIndex((timeline) => timeline.timelineId === action.payload.resTimeline.timelineId);
+            state.timelines[indexUpdate].title = action.payload.resTimeline.title
+            state.timelines[indexUpdate].description = action.payload.resTimeline.description;
+
+            return {
+                ...state,
+                loading: false
+            }
+        }
         case 'SET_ACTIVITIES':
             return {
                 ...state,
@@ -161,13 +168,7 @@ const timelineReducer = (state, action) => {
         case 'LIKE_TIMELINE': {
 
             let index = state.timelines.findIndex((timeline) => timeline.timelineId === action.payload.timelineId);
-            console.log('index reducer ', index)
-           
-            console.log('payload ', action.payload)
-
-            console.log('state timeline', state.timeline)
             if (state.timelines[index].timelineId === action.payload.timelineId) {
-                console.log('inside if')
                 state.timelines[index] = action.payload;
             }
 
@@ -205,7 +206,7 @@ const timelineReducer = (state, action) => {
             };
         }
 
-        case 'POST_CARD' : {
+        case 'POST_CARD': {
             if (!state.timeline.cards) {
 
                 return {
@@ -230,54 +231,54 @@ const timelineReducer = (state, action) => {
                     errorLikeCards: '',
                     loading: false
                 };
+            }
+        };
+
+        case 'ADD_CARD_ERROR': {
+            return {
+                ...state,
+                loading: false
+            }
+        };
+
+        case 'EDIT_CARD': {
+            let indexUpdate = state.timeline.cards.findIndex((card) => card.cardId === action.payload.cardId);
+
+            state.timeline.cards[indexUpdate].title = action.payload.title
+            state.timeline.cards[indexUpdate].body = action.payload.body;
+            state.timeline.cards[indexUpdate].source = action.payload.source;
+            state.timeline.cards[indexUpdate].cardDate = action.payload.cardDate;
+
+            return {
+                ...state,
+                loading: false,
+                errorLikeCards: ''
+            }
         }
-    };
 
-    case 'ADD_CARD_ERROR':{
-        return {
-            ...state,
-            loading: false
+        case 'DELETE_CARD': {
+            let index = state.timeline.cards.findIndex((card) => card.cardId === action.payload);
+            state.timeline.cards.splice(index, 1);
+
+            return {
+                ...state
+                ,
+                timeline: {
+                    ...state.timeline,
+                    cards: [...state.timeline.cards]
+                },
+                errorLikeCards: ''
+            }
+        };
+
+        case 'SET_RATINGS': {
+            return {
+                ...state,
+                ...action.payload,
+                loading: false
+            }
         }
-    };
 
-    case 'EDIT_CARD': {
-        let indexUpdate = state.timeline.cards.findIndex((card) => card.cardId === action.payload.cardId);
-
-        state.timeline.cards[indexUpdate].title = action.payload.title
-        state.timeline.cards[indexUpdate].body = action.payload.body;
-        state.timeline.cards[indexUpdate].source = action.payload.source;
-        state.timeline.cards[indexUpdate].cardDate = action.payload.cardDate;
-
-        return {
-            ...state,
-            loading:false,
-            errorLikeCards: ''
-        }
-    }
-
-    case 'DELETE_CARD': {
-        let index = state.timeline.cards.findIndex((card) => card.cardId === action.payload);
-        state.timeline.cards.splice(index, 1);
-
-        return {
-            ...state
-            ,
-            timeline: {
-                ...state.timeline,
-                cards: [...state.timeline.cards]
-            },
-            errorLikeCards: ''
-        }
-    };
-
-    case 'SET_RATINGS':{
-        return {
-            ...state,
-            ...action.payload,
-            loading: false
-        }
-    }
-        
         default:
             return state;
     }
@@ -357,8 +358,8 @@ const getTimelineById = dispatch => async (id, page) => {
 };
 
 const getTimelineRatings = dispatch => async (timelineId) => {
-    console.log('getting ratings with id' , timelineId);
-    try{
+    console.log('getting ratings with id', timelineId);
+    try {
 
         const res = historyCardsApi.get('/ratings/' + timelineId)
         if (res.data) {
@@ -369,8 +370,8 @@ const getTimelineRatings = dispatch => async (timelineId) => {
         }
         dispatch({ type: 'STOP_LOADING_DATA_UI' })
 
-    }catch(err){
-        console.log('err getting ratings' , err)
+    } catch (err) {
+        console.log('err getting ratings', err)
     }
 }
 
@@ -432,53 +433,80 @@ const addNewTimeline = dispatch => async ({ title, description }) => {
 
 // Upload timeline image
 const uploadImageTimeline = dispatch => async ({ timelineId, image }) => {
+
+    try{
     dispatch({ type: 'LOADING_DATA_UI' })
     const token = await AsyncStorage.getItem('token');
 
-    const formData = new FormData();
-    formData.append("detectImg", {
-        uri: image.uri,
-        name: "image",
-        type: "image/jpg",
+    let uriParts = image.split('.');
+    let fileType = uriParts[uriParts.length - 1];
+
+    let formData = new FormData();
+    formData.append('image', {
+      image,
+      name: `photo.${fileType}`,
+      type: `image/${fileType}`,
     });
 
+    let options = {
+        method: 'POST',
+        body: formData,
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'multipart/form-data',
+        },
+      };
+    
+      // const res = await  fetch(apiUrl, options);
 
-    formData.append('image', image, 'name');
+            const response = await fetch(`/timeline/${timelineId}/image`, formData, options, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+      console.log('res upload img' , response);
 
-    try {
-        // const response = await historyCardsApi.post(`/timeline/${timelineId}/image`, formData, {
-        //     headers: {
-        //         'Authorization': `Bearer ${token}`
-        //     }
-        // });
-
-        const response = await fetch(`/timeline/${timelineId}/image`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "multipart/form-data",
-            },
-            body: formData,
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-
-
-        dispatch({
-            type: 'UPLOAD_IMAGE_TIMELINE',
-            payload: response.data.resTimeline
-        })
-
-        navigate('TimelinesHome')
-
-    } catch (err) {
-        console.log('err adding new timeline ', err);
+    }catch(err){
+        console.log('err upload' , err);
     }
+    // const formData = new FormData();
+    // formData.append("detectImg", {
+    //     uri: image.uri,
+    //     name: "image",
+    //     type: "image/jpg",
+    // });
+
+
+    // formData.append('image', image, 'name');
+
+    // try {
+    //     const response = await historyCardsApi.post(`/timeline/${timelineId}/image`, formData, {
+    //         headers: {
+    //             'Authorization': `Bearer ${token}`
+    //         }
+    //     });
+
+
+
+    //     dispatch({
+    //         type: 'UPLOAD_IMAGE_TIMELINE',
+    //         payload: response.data.resTimeline
+    //     })
+    //     console.log()
+    //     navigate('TimelinesHome')
+
+    // } catch (err) {
+    //     console.log('err adding new timeline ', err);
+    //     dispatch({
+    //         type: 'UPLOAD_IMAGE_TIMELINE',
+    //         payload: null
+    //     })
+    // }
 }
 
 // Like a timeline
 const likeTimeline = dispatch => async ({ timelineId }) => {
-    console.log('timelineid in context', timelineId)
+    console.log('like timeline id', timelineId);
     try {
         const token = await AsyncStorage.getItem('token');
         const res = await historyCardsApi.get(`/timeline/${timelineId}/like`, {
@@ -498,24 +526,25 @@ const likeTimeline = dispatch => async ({ timelineId }) => {
 };
 
 // Unlike a timeline
-// const unlikeTimeline = dispatch => async ({ timelineId }) => {
-//     try {
-//         const token = await AsyncStorage.getItem('token');
-//         const res = await historyCardsApi.get(`/timeline/${timelineId}/unlike`, {
-//             headers: {
-//                 'Authorization': `Bearer ${token}`
-//             }
-//         });
+const unlikeTimeline = dispatch => async ({ timelineId }) => {
+    console.log('unlike timeline id', timelineId);
+    try {
+        const token = await AsyncStorage.getItem('token');
+        const res = await historyCardsApi.get(`/timeline/${timelineId}/unlike`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
 
-//         dispatch({
-//             type: 'UNLIKE_TIMELINE',
-//             payload: res.data
-//         })
+        dispatch({
+            type: 'UNLIKE_TIMELINE',
+            payload: res.data
+        })
 
-//     } catch (err) {
-//         console.log('err unlike timeline ', err)
-//     }
-// };
+    } catch (err) {
+        console.log('err unlike timeline ', err)
+    }
+};
 
 // Favorite a timeline
 const favoriteTimeline = dispatch => async ({ timelineId }) => {
@@ -558,7 +587,7 @@ const unfavoriteTimeline = dispatch => async ({ timelineId }) => {
 };
 
 // Edit a timeline
-const editTimeline = dispatch => async ({timelineId, title, description}) => {
+const editTimeline = dispatch => async ({ timelineId, title, description }) => {
     dispatch({ type: 'LOADING_DATA_UI' })
     try {
 
@@ -568,7 +597,7 @@ const editTimeline = dispatch => async ({timelineId, title, description}) => {
         };
 
         const token = await AsyncStorage.getItem('token');
-        const res = await historyCardsApi.post(`/timeline/${timelineId}/edit`, editedTimeline , {
+        const res = await historyCardsApi.post(`/timeline/${timelineId}/edit`, editedTimeline, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -613,9 +642,9 @@ const deleteTimeline = dispatch => async ({ timelineId }) => {
     CARDS DATA ACTIONS
 ==============================*/
 
-const addTimelineCard = dispatch => async ({title, description, date , source , id}) => {
-    console.log('add card id  ' , id);
-    console.log('add card date  ' , date);
+const addTimelineCard = dispatch => async ({ title, description, date, source, id }) => {
+    console.log('add card id  ', id);
+    console.log('add card date  ', date);
     dispatch({ type: 'LOADING_DATA_UI' })
     const token = await AsyncStorage.getItem('token');
 
@@ -623,10 +652,10 @@ const addTimelineCard = dispatch => async ({title, description, date , source , 
         "title": title,
         "body": description,
         "cardDate": date,
-        "source" : source
+        "source": source
     };
 
-    console.log('new Timeline' , newTimeline);
+    console.log('new Timeline', newTimeline);
 
     try {
         const res = await historyCardsApi.post(`/timeline/${id}/comment`, newTimeline, {
@@ -641,12 +670,12 @@ const addTimelineCard = dispatch => async ({title, description, date , source , 
         })
 
         navigate('TimelineDetailScreenByID',
-        {
-            id: res.data.timelineId
-        })
+            {
+                id: res.data.timelineId
+            })
 
     } catch (err) {
-        console.log('err add card' , err);
+        console.log('err add card', err);
         dispatch({
             type: 'ADD_CARD_ERROR',
             payload: null
@@ -656,19 +685,19 @@ const addTimelineCard = dispatch => async ({title, description, date , source , 
 };
 
 // Edit card
-const editTimelineCard = dispatch => async({timelineId, cardId, title, body, cardDate, source}) => {
+const editTimelineCard = dispatch => async ({ timelineId, cardId, title, body, cardDate, source }) => {
     dispatch({ type: 'LOADING_DATA_UI' })
     try {
 
         const editedTimelineCard = {
             "title": title,
             "body": body,
-            "cardDate" : cardDate,
-            "source" : source
+            "cardDate": cardDate,
+            "source": source
         };
 
         const token = await AsyncStorage.getItem('token');
-        const res = await historyCardsApi.post('/timeline/'+timelineId+'/'+cardId+'/edit', editedTimelineCard , {
+        const res = await historyCardsApi.post('/timeline/' + timelineId + '/' + cardId + '/edit', editedTimelineCard, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -679,7 +708,7 @@ const editTimelineCard = dispatch => async({timelineId, cardId, title, body, car
             payload: res.data.card
         });
 
-        navigate('TimelineListAllCards' , {
+        navigate('TimelineListAllCards', {
             id: timelineId
         });
 
@@ -689,7 +718,7 @@ const editTimelineCard = dispatch => async({timelineId, cardId, title, body, car
 }
 
 // Delete a card
-const deleteTimelineCard = dispatch => async ({ timelineId , cardId }) => {
+const deleteTimelineCard = dispatch => async ({ timelineId, cardId }) => {
     try {
         const token = await AsyncStorage.getItem('token');
         await historyCardsApi.delete(`/timeline/${timelineId}/${cardId}/delete`, {
@@ -713,8 +742,8 @@ export const { Provider, Context } = createDataContext(
     {
         getTimelines, getTimelineCards, getTimelineFavorites,
         addNewTimeline, uploadImageTimeline, getRecentActivities, getTimelineById,
-        likeTimeline, favoriteTimeline, unfavoriteTimeline, deleteTimeline , editTimeline,
-        addTimelineCard , deleteTimelineCard , editTimelineCard
+        likeTimeline, unlikeTimeline, favoriteTimeline, unfavoriteTimeline, deleteTimeline, editTimeline,
+        addTimelineCard, deleteTimelineCard, editTimelineCard
     },
     {
         errors: [],

@@ -13,13 +13,11 @@ import Spacer from '../../elements/Spacer';
 import DeleteCardTimeline from '../cards/DeleteCardTimeline';
 import EditCardTimeline from '../cards/EditCardTimeline';
 
-import LikeTimelineCardButton from '../cards/LikeTimelineCardButton';
+import LikeTimelineCardButton from '../cards/LikeTimelineCardButton'
 import DislikeTimelineCardButton from '../cards/DislikeTimelineCardButton';
 
 
 const CardsList = ({ result, navigation }) => {
-
-    console.log('result user handle ' , result.userHandle);
 
     const userAvar = result.userImage
 
@@ -80,13 +78,21 @@ const CardsList = ({ result, navigation }) => {
                         </Left>
                     </CardItem>
                     <CardItem >
-                            <View style={styles.right}>
-                            <LikeTimelineCardButton 
-                                style={styles.favorite} 
-                                handle = {result.userHandle}
+                        <View style={styles.right}>
+
+                            <Text style={styles.likeCount}>{result.likeCount}</Text>
+                            <LikeTimelineCardButton
+                                style={styles.likeIcon}
+                                handle={result.userHandle}
                                 id={result.cardId} />
-                            <DislikeTimelineCardButton />
-                            </View>
+
+                            <Text style={styles.dislikeCount}>{result.dislikeCount}</Text>
+                            <DislikeTimelineCardButton
+                                style={styles.dislikeIcon}
+                                handle={result.userHandle}
+                                id={result.cardId} />
+
+                        </View>
                      
                     </CardItem>
                 </Card>
@@ -115,16 +121,21 @@ const styles = StyleSheet.create({
     right: {
         flexDirection: 'row',
     },
-    favorite: {
+    likeIcon: {
+        marginRight:10
     },
-    viewcards: {
-        marginLeft: 15,
-        marginTop: 1
+    dislikeIcon:{
+        marginTop: 2
+    },  
+    likeCount:{
+        marginRight: 10,
+        marginTop: 5
     },
-    link: {
-        color: '#3498db',
-        alignSelf: 'flex-end'
-    },
+    dislikeCount:{
+        marginRight: 10,
+        marginTop: 5,
+        marginLeft: 10
+    }
 
 });
 
