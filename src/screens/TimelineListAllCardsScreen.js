@@ -54,7 +54,7 @@ const TimelineListAllCardsScreen = ({ navigation }) => {
                 ? <ActivityIndicator style={{ paddingTop: 15 }} size="large" color="#00bcd4" />
                 : (
                     <View>
-                        <Text style={styles.title}>Cards</Text>
+                        {/* <Text style={styles.title}>Cards</Text> */}
                         <CardsAllList cards={state.timeline.cards} />
 
                     </View>

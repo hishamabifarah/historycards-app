@@ -9,8 +9,6 @@ const LikeTimelineButton = ({ navigation , timelineId}) => {
     const { state , clearLikes  } = useContext(AuthContext);
     const { likeTimeline ,unlikeTimeline } = useContext(TimelineContext);
 
-    console.log('statein likedtimelinebutton' , state.credentials);
-
     const likedTimeline = () => {
         if (state.likes && state.likes.find((like) => like.timelineId === timelineId))
             return true;

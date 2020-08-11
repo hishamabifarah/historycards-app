@@ -1,6 +1,6 @@
 import React from 'react'
-import { FlatList, View, Text , StyleSheet, TouchableOpacity , SafeAreaView } from 'react-native';
-import TimelinesCardsList from './TimelinesCardsList';
+import { FlatList, View } from 'react-native';
+import TimelineListAllFavorites from './TimelineListAllFavorites';
 
 const TimelinesFavoritesList = ({ timelines }) => {
     if (!timelines.length) {
@@ -14,16 +14,12 @@ const TimelinesFavoritesList = ({ timelines }) => {
                 keyExtractor={(timeline) => timeline.timelineId}
                 renderItem={({ item }) => {
                     return (
-                            <TimelinesCardsList result={item} />
+                            <TimelineListAllFavorites result={item} />
                     )
                 }}
             />
         </View>
     )
 };
-
-const styles = StyleSheet.create({
-
-});
 
 export default TimelinesFavoritesList;

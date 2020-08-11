@@ -59,7 +59,12 @@ const switchNavigator = createSwitchNavigator({
       TimelineDetailScreenByID: {
         screen: TimelineDetailScreenByID,
         navigationOptions: {
-          title: 'Timeline Detail'
+          title: 'Timeline Detail',
+          headerTintColor: '#FFF',
+          headerStyle: {
+              backgroundColor: '#3498db'
+          },
+          color: '#000',
         }
       },
       TimelineCreate: {

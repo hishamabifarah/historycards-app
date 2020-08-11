@@ -8,6 +8,10 @@ import {
     TouchableOpacity
 } from 'react-native';
 
+// dayjs
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+
 import Icon from 'react-native-vector-icons/Ionicons';
 import { withNavigation } from 'react-navigation';
 
@@ -16,6 +20,8 @@ const Profile = ({ profile, navigation }) => {
         return;
     }
 
+    dayjs.extend(relativeTime);
+    const time = dayjs(profile.createdAt).fromNow();
     return (
         <SafeAreaView >
             <View style={styles.header}></View>
@@ -61,7 +67,7 @@ const Profile = ({ profile, navigation }) => {
                         {/* Joined Date */}
                         <View style={styles.content}>
                             <Icon style={styles.inputIcon} name={'md-calendar'} size={24} color={'#3498db'} />
-                            <Text style={styles.name}>{profile.createdAt}</Text>
+                            <Text style={styles.name}>Joined {time}</Text>
                         </View>
                     </View>
 

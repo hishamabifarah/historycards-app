@@ -94,7 +94,7 @@ const TimelineEditCard = ({ navigation }) => {
                         </TouchableOpacity>
 
                         {state.loading ? (
-                            <ActivityIndicator style={{ paddingTop: 15 }} size="large" color="#00bcd4" />
+                            <ActivityIndicator style={{ paddingTop: 10 }} size="large" color="#00bcd4" />
                         ) : null
                         }
 
@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
     logoText: {
         fontSize: 20,
         fontWeight: "800",
-        marginTop: 50,
+        marginTop: 20,
         marginBottom: 30,
         textAlign: 'center',
     },

@@ -1,7 +1,7 @@
 // React Native
 import React, { useContext, useEffect, useState } from 'react'
 import { Text, StyleSheet, ScrollView, Image, Dimensions, View, ActivityIndicator, TouchableOpacity } from 'react-native';
-// import { NavigationEvents } from 'react-navigation';
+import { NavigationEvents } from 'react-navigation';
 import { Context as TimelineContext } from "../context/timelinesContext";
 import Timeline from 'react-native-timeline-flatlist';
 // Components
@@ -19,9 +19,9 @@ const { width: WIDTH } = Dimensions.get('window');
 const TimelineDetailScreenByID = ({ navigation }) => {
 
     const id = navigation.getParam('id');
-    const { state, getTimelineById } = useContext(TimelineContext);
+    const { state, getTimelineById, clearErrorMessage } = useContext(TimelineContext);
 
-    console.log('state Timeline Details: ', state);
+    // console.log('state Timeline Details: ', state);
     dayjs.extend(relativeTime);
 
     const [page, setPage] = useState(state.page)
@@ -58,12 +58,6 @@ const TimelineDetailScreenByID = ({ navigation }) => {
     };
 
     TimelineDetailScreenByID.navigationOptions = () => ({
-        title: 'Timeline Details',
-        headerTintColor: '#FFF',
-        headerStyle: {
-            backgroundColor: '#3498db'
-        },
-        color: '#000',
         headerRight: () => (
             <View style={styles.icons}>
                 <EditTimelineCard timelineId = {id} />
@@ -82,6 +76,9 @@ const TimelineDetailScreenByID = ({ navigation }) => {
     return (
 
         <ScrollView>
+            <NavigationEvents
+                onWillBlur={clearErrorMessage}
+            />
             {state.loading && page === 1
                 ? <ActivityIndicator style={{ paddingTop: 15 }} size="large" color="#00bcd4" />
                 : (

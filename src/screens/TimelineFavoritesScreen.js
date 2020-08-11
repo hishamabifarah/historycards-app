@@ -15,14 +15,13 @@ const TimelineFavoritesScreen = () => {
     return (
         state.loading
             ? <ActivityIndicator style={{ marginTop: 50 }} size="large" color="#00bcd4" />
-            : (
- 
+            : state.favorites && state.favorites.length > 0 ? (
                 <ScrollView>
                     <Text style={styles.title}> Favorite Timelines </Text>
                     <TimelinesFavoritesList timelines={state.favorites}/>
                 </ScrollView>
       
-            )
+            ): <Text style={styles.title}> No Favorites yet.</Text>
     )
 };
 

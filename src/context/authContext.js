@@ -7,13 +7,13 @@ import { Keyboard } from 'react-native'
 const authReducer = (state, action) => {
     switch (action.type) {
         case 'signup':
-            return { errors: [], token: action.payload, loading: false , authenticated: true };
+            return { errors: [], token: action.payload, loading: false, authenticated: true };
         case 'signin':
             return { errors: [], token: action.payload, loading: false, authenticated: true };
         case 'signout':
-            return { token: null, errors: [], loading: false, authenticated : false };
+            return { token: null, errors: [], loading: false, authenticated: false };
         case 'SET_USER_DETAILS':
-            return { ...state,  userDetails: action.payload.user , authenticated : true };
+            return { ...state, userDetails: action.payload.user, authenticated: true };
         case 'clear_error_messages':
             return { ...state, errors: [], loading: false };
         case 'loading_UI':
@@ -27,10 +27,10 @@ const authReducer = (state, action) => {
         case 'set_authenticated':
             return { ...state, authenticated: true }
         case 'set_user':
-            return { ...state ,  notifications: action.payload.notifications , authenticated: true , ...action.payload };
-        case 'MARK_NOTIFICATIONS_READ' :
-                state.notifications.forEach((notification) => (notification.read = true))
-                return { ...state };
+            return { ...state, notifications: action.payload.notifications, authenticated: true, ...action.payload };
+        case 'MARK_NOTIFICATIONS_READ':
+            state.notifications.forEach((notification) => (notification.read = true))
+            return { ...state };
         case 'LIKE_TIMELINE':
             return {
                 ...state,
@@ -48,19 +48,19 @@ const authReducer = (state, action) => {
     }
 };
 
-const clearLikes = dispatch => ({id, handle}) =>{
-    console.log('clear likes id and handle' , id + ' - ' + handle);
+const clearLikes = dispatch => ({ id, handle }) => {
+    console.log('clear likes id and handle', id + ' - ' + handle);
 
 
-    const payload2 ={
-        "id" : id,
-        "handle" : handle
-     }
+    const payload2 = {
+        "id": id,
+        "handle": handle
+    }
 
 
     dispatch({
         type: 'LIKE_TIMELINE',
-        payload : payload2
+        payload: payload2
     })
 }
 
@@ -86,6 +86,19 @@ const signup = (dispatch) => async ({ email, password, confirmPassword, handle }
             type: 'signup',
             payload: response.data.tokenId
         })
+
+        const res = await historyCardsApi.get('/user', {
+            headers: {
+                'Authorization': `Bearer ${response.data.tokenId}`
+            }
+        });
+
+        await AsyncStorage.setItem('handle', res.data.credentials.handle);
+
+        dispatch({
+            type: 'set_user',
+            payload: res.data
+        });
 
         navigate('mainFlow');
 
@@ -185,7 +198,7 @@ const signout = dispatch => async () => {
     navigate('Splash');
 };
 
-const markNotificationsRead = dispatch => async ( notificationsId ) => {
+const markNotificationsRead = dispatch => async (notificationsId) => {
     const token = await AsyncStorage.getItem('token');
     try {
         await historyCardsApi.post('/notifications', notificationsId, {
@@ -204,16 +217,12 @@ const markNotificationsRead = dispatch => async ( notificationsId ) => {
 const tryLocalSignin = (dispatch) => async () => {
     const token = await AsyncStorage.getItem('token');
     if (token) {
-        // copied  getUserData() here because couldn't get getUserData() to be called with dispatch 
-       
         try {
             const res = await historyCardsApi.get('/user', {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
-
-           // console.log('tryLocalSignin user data' , res.data);
 
             await AsyncStorage.setItem('handle', res.data.credentials.handle);
 
@@ -223,13 +232,11 @@ const tryLocalSignin = (dispatch) => async () => {
             });
 
         } catch (err) {
-            //todo: handle error
-            // console.log('err get user data in tryLocalSign()', err);
             await AsyncStorage.removeItem('token');
             dispatch({ type: 'signout' });
             navigate('Splash');
         }
-   
+
         dispatch({ type: 'set_authenticated' });
         navigate('TimelinesHome');
     } else {
@@ -295,8 +302,9 @@ const clearErrorMessage = dispatch => () => {
 
 export const { Provider, Context } = createDataContext(
     authReducer,
-    {   signin, signout, signup, clearErrorMessage, tryLocalSignin, 
-        tryLocalProfile, updateUserDetails , markNotificationsRead , clearLikes
+    {
+        signin, signout, signup, clearErrorMessage, tryLocalSignin,
+        tryLocalProfile, updateUserDetails, markNotificationsRead, clearLikes
     },
     {
         errors: [],

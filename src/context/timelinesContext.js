@@ -5,6 +5,8 @@ import { navigate } from '../navigation/navigationRef';
 
 const timelineReducer = (state, action) => {
     switch (action.type) {
+        case 'clear_error_messages':
+            return { ...state, loading: false }
         case 'LOADING_DATA_UI':
             return { ...state, loading: true }
 
@@ -284,6 +286,12 @@ const timelineReducer = (state, action) => {
     }
 };
 
+
+const clearErrorMessage = dispatch => () => {
+    console.log('clearErrorMessage called');
+    dispatch({ type: 'clear_error_messages' })
+}
+
 /*============================
     TIMELINES DATA ACTIONS
 ==============================*/
@@ -318,13 +326,19 @@ const getRecentActivities = (dispatch) => async () => {
 };
 
 const getTimelineFavorites = dispatch => async (handle) => {
+    dispatch({ type: 'LOADING_DATA_UI' });
     try {
-        const response = await historyCardsApi.get(`/user/favorites/${'hisham'}`);
-        // console.log('res data', response.data);
-        dispatch({
-            type: 'SET_FAVORITES',
-            payload: response.data.timelines
-        })
+        const token = await AsyncStorage.getItem('token');
+        if (token) {
+            const handle = await AsyncStorage.getItem('handle');
+            const response = await historyCardsApi.get(`/user/favorites/${handle}`);
+            dispatch({
+                type: 'SET_FAVORITES',
+                payload: response.data.timelines
+            })
+        }else{
+            navigate('Splash');
+        }
     } catch (err) {
         console.log('err favorites', err);
     }
@@ -396,6 +410,7 @@ const getTimelineCards = dispatch => async (id, page) => {
 
 // Add New Timeline
 const addNewTimeline = dispatch => async ({ title, description }) => {
+    console.log('addNEwTimeline Called');
     dispatch({ type: 'LOADING_DATA_UI' })
     const token = await AsyncStorage.getItem('token');
 
@@ -420,7 +435,7 @@ const addNewTimeline = dispatch => async ({ title, description }) => {
         navigate('TimelineAddImage', {
             title: response.data.resTimeline.title,
             description: response.data.resTimeline.description,
-            id: response.data.resTimeline.id
+            id: response.data.resTimeline.timelineId
         });
 
     } catch (err) {
@@ -434,74 +449,62 @@ const addNewTimeline = dispatch => async ({ title, description }) => {
 // Upload timeline image
 const uploadImageTimeline = dispatch => async ({ timelineId, image }) => {
 
-    try{
+    console.log('id upload image', timelineId);
+    console.log('image upload image', image);
     dispatch({ type: 'LOADING_DATA_UI' })
-    const token = await AsyncStorage.getItem('token');
+    try {
+        // get the token 
+        const token = await AsyncStorage.getItem('token');
 
-    let uriParts = image.split('.');
-    let fileType = uriParts[uriParts.length - 1];
+        // ImagePicker saves the taken photo to disk and returns a local URI to it
+        let localUri = image;
+        let filename = localUri.split('/').pop();
 
-    let formData = new FormData();
-    formData.append('image', {
-      image,
-      name: `photo.${fileType}`,
-      type: `image/${fileType}`,
-    });
+        console.log('filename', filename)
 
-    let options = {
-        method: 'POST',
-        body: formData,
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'multipart/form-data',
-        },
-      };
-    
-      // const res = await  fetch(apiUrl, options);
+        // Infer the type of the image
+        let match = /\.(\w+)$/.exec(filename);
+        let type = match ? `image/${match[1]}` : `image`;
 
-            const response = await fetch(`/timeline/${timelineId}/image`, formData, options, {
-        headers: {
-            'Authorization': `Bearer ${token}`
-        }
-    });
-      console.log('res upload img' , response);
+        // Upload the image using the fetch and FormData APIs
+        // let formData = new FormData();
+        // Assume "photo" is the name of the form field the server expects
+        // formData.append('image', { uri: localUri, name: filename, type });
 
-    }catch(err){
-        console.log('err upload' , err);
+
+
+        var img = 'file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540hishamabifarah%252Fhistorycards-app/ImagePicker/ff4fff04-0f51-4074-92a0-65388c44a7da.jpg'
+        let formData = new FormData();
+        formData.append('image', img, filename);
+        // console.log('formdata' , formData);
+
+
+
+        const response = await historyCardsApi.post(`/timeline/${timelineId}/image`, formData, {
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'multipart/form-data',
+                'Authorization': `Bearer ${token}`
+            },
+        });
+
+        // const response = await fetch(`/timeline/${timelineId}/image`, options);
+        console.log('res upload img', response);
+
+        dispatch({
+            type: 'UPLOAD_IMAGE_TIMELINE',
+            payload: response.data.resTimeline
+        });
+
+        console.log('end upload img', response.data.resTimeline);
+
+    } catch (err) {
+        console.log('err upload', err);
+        dispatch({
+            type: 'UPLOAD_IMAGE_TIMELINE',
+            payload: null
+        })
     }
-    // const formData = new FormData();
-    // formData.append("detectImg", {
-    //     uri: image.uri,
-    //     name: "image",
-    //     type: "image/jpg",
-    // });
-
-
-    // formData.append('image', image, 'name');
-
-    // try {
-    //     const response = await historyCardsApi.post(`/timeline/${timelineId}/image`, formData, {
-    //         headers: {
-    //             'Authorization': `Bearer ${token}`
-    //         }
-    //     });
-
-
-
-    //     dispatch({
-    //         type: 'UPLOAD_IMAGE_TIMELINE',
-    //         payload: response.data.resTimeline
-    //     })
-    //     console.log()
-    //     navigate('TimelinesHome')
-
-    // } catch (err) {
-    //     console.log('err adding new timeline ', err);
-    //     dispatch({
-    //         type: 'UPLOAD_IMAGE_TIMELINE',
-    //         payload: null
-    //     })
-    // }
 }
 
 // Like a timeline
@@ -743,7 +746,7 @@ export const { Provider, Context } = createDataContext(
         getTimelines, getTimelineCards, getTimelineFavorites,
         addNewTimeline, uploadImageTimeline, getRecentActivities, getTimelineById,
         likeTimeline, unlikeTimeline, favoriteTimeline, unfavoriteTimeline, deleteTimeline, editTimeline,
-        addTimelineCard, deleteTimelineCard, editTimelineCard
+        addTimelineCard, deleteTimelineCard, editTimelineCard , clearErrorMessage
     },
     {
         errors: [],

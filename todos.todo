@@ -1,4 +1,4 @@
-☐ 1. get user data on sign up
+✔ 1. get user data on sign up @done (8/11/2020, 6:26:12 PM)
 ✔ 2. finish adding new timeline + error handling alers and loader @done (7/30/2020, 4:55:48 PM)
 ✔ 3. Notifications screen list for read and unread @done (7/30/2020, 4:55:43 PM)
 ✔ 4. Latest Activities list in home screen @done (7/30/2020, 4:55:34 PM)
@@ -7,7 +7,7 @@
 ✔ 7. edit stars and likes in home page better design @done (7/30/2020, 4:55:19 PM)
 ✔ 8. Login error fix @done (7/30/2020, 5:51:49 PM)
 ✔ 9. Mark notifications read @done (8/1/2020, 5:54:04 PM)
-☐ 10. Add Like Button to timeline card
+✔ 10. Add Like Button to timeline card @done (8/11/2020, 6:27:11 PM)
 ✔ 11. Add all buttons and icons for timeline card (likes, comments count, bookmark...) @done (8/8/2020, 5:07:49 PM)
 ✔ 12. Add Edit Screen for timeline @done (8/8/2020, 5:07:41 PM)
 ✔ 13. Timelines all load more add loader and error handling @done (8/8/2020, 5:07:37 PM)
@@ -18,9 +18,11 @@
 ☐ 18. fix image not uploading when creating new timeline
 ☐ 19. disable buttons on uploading image when uploading timeline image
 ☐ 20. add editing image when editing timeline
-☐ 21. Finish loading timeline details with cards (x2)
+✔ 21. Finish loading timeline details with cards @done (8/11/2020, 4:18:16 PM)
 ✔ 22. Implement add card to timeline @done (8/8/2020, 5:07:25 PM)
-☐ 23. Implement edit and delete card of timeline
+✔ 23. Implement edit and delete card of timeline @done (8/11/2020, 6:26:27 PM)
 ☐ 24. Implement like and dislike card
 ☐ 25. if timeline has no cards on click of edit cards , return
 ☐ 26. card dates are not by order bug
+☐ 27. get card date (format it) into card edit screen and finalize editing it
+☐ 28. LikeTimelineButton get handle from state

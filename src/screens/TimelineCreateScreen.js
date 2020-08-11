@@ -12,7 +12,7 @@ const TimelineCreateScreen = () => {
     const [description, setDescription] = useState('');
 
     const { state, addNewTimeline } = useContext(TimelineContext);
-    console.log('state', state.loading);
+    // console.log('state in add timeline screen', state.loading);
 
     const checkInput = () => {
         if(title.trim().length === 0){ 
@@ -20,7 +20,7 @@ const TimelineCreateScreen = () => {
         }else if(description.trim().length === 0){
             Alert.alert('Please Enter Description');
         }else{
-            addNewTimeline({title, description});
+            addNewTimeline({ title, description });
         }
     }
 
