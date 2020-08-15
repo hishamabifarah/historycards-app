@@ -19,6 +19,8 @@ import DislikeTimelineCardButton from '../cards/DislikeTimelineCardButton';
 
 const CardsList = ({ result, navigation }) => {
 
+    console.log('result card date' , result.cardDate);
+
     const userAvar = result.userImage
 
     const image = result.imageUrl

@@ -12,7 +12,6 @@ import SplashScreen from './src/screens/SplashScreen';
 import TimelinesHomeScreen from './src/screens/TimelinesHomeScreen';
 import TimelineCreateScreen from './src/screens/TimelineCreateScreen';
 import TimelineEditScreen from './src/screens/TimelineEditScreen';
-import TimelineDetailsScreen from './src/screens/TimelineDetailsScreen';
 import TimelineFavoritesScreen from './src/screens/TimelineFavoritesScreen';
 import TimelineListAllScreen from './src/screens/TimelineListAllScreen';
 import ResolveAuthScreen from './src/screens/ResolveAuthScreen';
@@ -47,8 +46,7 @@ const switchNavigator = createSwitchNavigator({
   }),
   mainFlow: createBottomTabNavigator({
     timelineFlow: createStackNavigator({
-      TimelinesHome: TimelinesHomeScreen,
-      TimelineDetail: TimelineDetailsScreen,
+      TimelinesHome: TimelinesHomeScreen, 
       TimelineEdit: {
         screen: TimelineEditScreen,
         navigationOptions:{

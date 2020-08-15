@@ -12,13 +12,13 @@ const TimelineEditCard = ({ navigation }) => {
     const [title, setTitle] = useState(navigation.getParam('title'));
     const [body, setBody] = useState(navigation.getParam('body'));
     const [source, setSource] = useState(navigation.getParam('source'));
-    // const [cardDate, setCardDate] = useState(navigation.getParam('cardDate'));
-    const [cardDate, setCardDate] = useState(new Date());
+    const [cardDate, setCardDate] = useState(navigation.getParam('cardDate'));
+    const handleChange = cardDate => setCardDate(cardDate);
     const [timelineId] = useState(navigation.getParam('timelineId'));
     const [cardId] = useState(navigation.getParam('cardId'));
     const { state, editTimelineCard } = useContext(TimelineContext);
 
-    const handleChange = cardDate => setDate(cardDate);
+   
 
     const checkInput = () => {
         if (title.trim().length === 0) {

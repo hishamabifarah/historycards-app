@@ -4,10 +4,12 @@ import { Context as TimelineContext } from "../../context/timelinesContext";
 import { withNavigation } from 'react-navigation';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-const LikeTimelineButton = ({ navigation , timelineId}) => {
+const LikeTimelineButton = ({ navigation, timelineId }) => {
 
-    const { state , clearLikes  } = useContext(AuthContext);
-    const { likeTimeline ,unlikeTimeline } = useContext(TimelineContext);
+    const { state, clearLikes , clearUnlikes } = useContext(AuthContext);
+    const { likeTimeline, unlikeTimeline } = useContext(TimelineContext);
+
+    // console.log('state get userhandle', state.credentials);
 
     const likedTimeline = () => {
         if (state.likes && state.likes.find((like) => like.timelineId === timelineId))
@@ -16,10 +18,16 @@ const LikeTimelineButton = ({ navigation , timelineId}) => {
     }
 
     const testLike = async () => {
-        await likeTimeline({timelineId})
-        const handle = 'hisham'
+        await likeTimeline({ timelineId })
+        const handle = state.credentials.handle
         const id = timelineId
-        clearLikes({id , handle});
+        clearLikes({ id, handle });
+    }
+
+    const testUnlikeTimeline = async () => {
+        await unlikeTimeline({ timelineId })
+        const id = timelineId
+        clearUnlikes(id);
     }
 
     const likeButton =
@@ -35,19 +43,19 @@ const LikeTimelineButton = ({ navigation , timelineId}) => {
                 style={{ marginRight: 3, marginLeft: 3 }}
                 name={'md-heart'}
                 size={20}
-                onPress={() => unlikeTimeline({timelineId})}
+                onPress={() => testUnlikeTimeline({ timelineId })}
                 color={'#3498db'} />
         ) : (
-            <Icon
-                style={{ marginRight: 3, marginLeft: 3 }}
-                name={'md-heart-empty'}
-                color={'#3498db'}
-                onPress={() => testLike()}
-                size={20} />
+                    <Icon
+                        style={{ marginRight: 3, marginLeft: 3 }}
+                        name={'md-heart-empty'}
+                        color={'#3498db'}
+                        onPress={() => testLike()}
+                        size={20} />
                 )
 
     return likeButton;
-    
+
 };
 
 export default withNavigation(LikeTimelineButton);

@@ -34,7 +34,6 @@ const authReducer = (state, action) => {
         case 'LIKE_TIMELINE':
             return {
                 ...state,
-                // spread the likes and add a new one on like
                 likes: [
                     ...state.likes,
                     {
@@ -43,6 +42,11 @@ const authReducer = (state, action) => {
                     }
                 ]
             };
+        case 'UNLIKE_TIMELINE':
+            return {
+                ...state,
+                likes: state.likes.filter((like) => like.timelineId !== action.payload.id)
+            }
         default:
             return state;
     }
@@ -51,15 +55,23 @@ const authReducer = (state, action) => {
 const clearLikes = dispatch => ({ id, handle }) => {
     console.log('clear likes id and handle', id + ' - ' + handle);
 
-
     const payload2 = {
         "id": id,
         "handle": handle
     }
-
-
     dispatch({
         type: 'LIKE_TIMELINE',
+        payload: payload2
+    })
+}
+
+const clearUnLikes = dispatch => ( id ) => {
+    console.log('clear unlikes id ', id );
+    const payload2 = {
+        "id": id
+    }
+    dispatch({
+        type: 'UNLIKE_TIMELINE',
         payload: payload2
     })
 }
@@ -304,7 +316,7 @@ export const { Provider, Context } = createDataContext(
     authReducer,
     {
         signin, signout, signup, clearErrorMessage, tryLocalSignin,
-        tryLocalProfile, updateUserDetails, markNotificationsRead, clearLikes
+        tryLocalProfile, updateUserDetails, markNotificationsRead, clearLikes, clearUnLikes
     },
     {
         errors: [],

@@ -26,3 +26,4 @@
 ☐ 26. card dates are not by order bug
 ☐ 27. get card date (format it) into card edit screen and finalize editing it
 ☐ 28. LikeTimelineButton get handle from state
+☐ 29. editTimeline() handle error dispatch 

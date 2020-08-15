@@ -2,6 +2,7 @@ import createDataContext from '../context/createDataContext';
 import historyCardsApi from '../api/historyCardsApi';
 import { AsyncStorage } from 'react-native';
 import { navigate } from '../navigation/navigationRef';
+import axios from 'axios';
 
 const timelineReducer = (state, action) => {
     switch (action.type) {
@@ -186,6 +187,9 @@ const timelineReducer = (state, action) => {
             state.timelines[index].likeCount = action.payload.likeCount;
             if (state.timeline.timelineId === action.payload.timelineId)
                 state.timeline = { ...state.timeline, ...action.payload };
+            return {
+                ...state
+            };
         }
 
         case 'FAVORITE_TIMELINE': {
@@ -509,7 +513,6 @@ const uploadImageTimeline = dispatch => async ({ timelineId, image }) => {
 
 // Like a timeline
 const likeTimeline = dispatch => async ({ timelineId }) => {
-    console.log('like timeline id', timelineId);
     try {
         const token = await AsyncStorage.getItem('token');
         const res = await historyCardsApi.get(`/timeline/${timelineId}/like`, {
@@ -550,10 +553,12 @@ const unlikeTimeline = dispatch => async ({ timelineId }) => {
 };
 
 // Favorite a timeline
+// http://europe-west1-historycards-a64e0.cloudfunctions.net/api/timeline/h0eUagFiJDCCN1KqIw0p/favorite
 const favoriteTimeline = dispatch => async ({ timelineId }) => {
+    // console.log('favorite timeline id' , timelineId);
     try {
         const token = await AsyncStorage.getItem('token');
-        const res = await historyCardsApi.post(`/timeline/${timelineId}/favorite`, {
+        const res = await axios.post(`http://europe-west1-historycards-a64e0.cloudfunctions.net/api/timeline/${timelineId}/favorite`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }

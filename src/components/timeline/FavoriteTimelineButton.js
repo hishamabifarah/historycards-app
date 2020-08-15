@@ -32,14 +32,14 @@ const FavoriteTimelineButton = ({ navigation, timelineId }) => {
                 style={{ marginRight: 3, marginLeft: 3 }}
                 name={'ios-bookmark'}
                 size={20}
-                onPress={() => favoriteTimeline({ timelineId })}
+                onPress={() => unfavoriteTimeline({ timelineId })}
                 color={'#3498db'} />
         ) : (
                     <Icon
                         style={{ marginRight: 3, marginLeft: 3 }}
                         name={'ios-bookmark'}
                         color={'#ff3d00'}
-                        onPress={() => unfavoriteTimeline({ timelineId })}
+                        onPress={() => favoriteTimeline({ timelineId })}
                         size={20} />
                 )
 

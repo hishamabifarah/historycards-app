@@ -6,7 +6,7 @@ import {
 } from 'react-native';
 import { Context as TimelineContext } from "../context/timelinesContext";
 import DatePicker from 'react-native-datepicker';
-const CardsCreateScreen = ({navigation}) => {
+const CardsCreateScreen = ({ navigation }) => {
 
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
@@ -17,26 +17,20 @@ const CardsCreateScreen = ({navigation}) => {
 
     const { state, addTimelineCard } = useContext(TimelineContext);
 
-    console.log('state loading', state.loading);
-  
-
     const checkInput = () => {
-        let convertDateToISOString = date.toISOString;
         if (title.trim().length === 0) {
             Alert.alert('Please Enter Title');
         } else if (description.trim().length === 0) {
             Alert.alert('Please Enter Description');
-        }else if(source.trim().length ===0 ){
+        } else if (source.trim().length === 0) {
             Alert.alert('Please Enter Source');
-        } 
-        // else if(date.trim().length === 0){
-        //     Alert.alert('Please Enter Date');
-        // }
+        }
+
         else {
-            let id =  navigation.getParam('timelineId');
-          
-            console.log('id in create screen and date' , id);
-            console.log('date in create screen' , date);
+            let id = navigation.getParam('timelineId');
+
+            // console.log('id in create screen and date' , id);
+            // console.log('date in create screen' , date);
             addTimelineCard({ title, description, date, source, id });
         }
     }
@@ -92,9 +86,9 @@ const CardsCreateScreen = ({navigation}) => {
                                     marginLeft: 36
                                 }
                             }}
-                            onDateChange={handleChange}/>
-                            {/* onDateChange={(text) => setDate(text)}  */}
-                    
+                            onDateChange={handleChange} />
+                        {/* onDateChange={(text) => setDate(text)}  */}
+
                         <TouchableOpacity
                             style={styles.buttonContainer}
                             disabled={state.loading}
@@ -198,9 +192,9 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#ff3d00'
     },
-    datepicker:{
+    datepicker: {
         width: 300,
-        alignSelf:'center',
+        alignSelf: 'center',
         marginRight: 15,
         marginTop: 5,
         marginBottom: 20
