@@ -19,7 +19,7 @@ import DislikeTimelineCardButton from '../cards/DislikeTimelineCardButton';
 
 const CardsList = ({ result, navigation }) => {
 
-    console.log('result card date' , result.cardDate);
+    // console.log('result card date' , result.cardDate);
 
     const userAvar = result.userImage
 
@@ -86,12 +86,14 @@ const CardsList = ({ result, navigation }) => {
                             <LikeTimelineCardButton
                                 style={styles.likeIcon}
                                 handle={result.userHandle}
+                                timelineId={result.timelineId}
                                 id={result.cardId} />
 
                             <Text style={styles.dislikeCount}>{result.dislikeCount}</Text>
                             <DislikeTimelineCardButton
                                 style={styles.dislikeIcon}
                                 handle={result.userHandle}
+                                timelineId={result.timelineId}
                                 id={result.cardId} />
 
                         </View>

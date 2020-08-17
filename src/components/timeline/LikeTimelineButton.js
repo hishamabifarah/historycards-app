@@ -26,8 +26,8 @@ const LikeTimelineButton = ({ navigation, timelineId }) => {
 
     const testUnlikeTimeline = async () => {
         await unlikeTimeline({ timelineId })
-        const id = timelineId
-        clearUnlikes(id);
+        const id = timelineId;
+        clearUnlikes({ id });
     }
 
     const likeButton =

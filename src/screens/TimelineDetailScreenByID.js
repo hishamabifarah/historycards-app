@@ -19,9 +19,8 @@ const { width: WIDTH } = Dimensions.get('window');
 const TimelineDetailScreenByID = ({ navigation }) => {
 
     const id = navigation.getParam('id');
-    const { state, getTimelineById, clearErrorMessage } = useContext(TimelineContext);
+    const { state, getTimelineById } = useContext(TimelineContext);
 
-    // console.log('state Timeline Details: ', state);
     dayjs.extend(relativeTime);
 
     const [page, setPage] = useState(state.page)
@@ -76,9 +75,6 @@ const TimelineDetailScreenByID = ({ navigation }) => {
     return (
 
         <ScrollView>
-            <NavigationEvents
-                onWillBlur={clearErrorMessage}
-            />
             {state.loading && page === 1
                 ? <ActivityIndicator style={{ paddingTop: 15 }} size="large" color="#00bcd4" />
                 : (

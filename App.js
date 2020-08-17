@@ -46,21 +46,36 @@ const switchNavigator = createSwitchNavigator({
   }),
   mainFlow: createBottomTabNavigator({
     timelineFlow: createStackNavigator({
-      TimelinesHome: TimelinesHomeScreen, 
+      TimelinesHome: TimelinesHomeScreen,
       TimelineEdit: {
         screen: TimelineEditScreen,
-        navigationOptions:{
-          title: 'Edit Timeline'
+        navigationOptions: {
+          title: 'Edit Timeline',
+          headerTintColor: '#FFF',
+          headerStyle: {
+            backgroundColor: '#3498db'
+          },
+          color: '#000',
         }
       },
-      Notifications: NotificationsScreen,
+      Notifications: {
+        screen: NotificationsScreen,
+        navigationOptions: {
+          title: 'Notifications',
+          headerTintColor: '#FFF',
+          headerStyle: {
+            backgroundColor: '#3498db'
+          },
+          color: '#000',
+        }
+      },
       TimelineDetailScreenByID: {
         screen: TimelineDetailScreenByID,
         navigationOptions: {
           title: 'Timeline Detail',
           headerTintColor: '#FFF',
           headerStyle: {
-              backgroundColor: '#3498db'
+            backgroundColor: '#3498db'
           },
           color: '#000',
         }
@@ -68,25 +83,47 @@ const switchNavigator = createSwitchNavigator({
       TimelineCreate: {
         screen: TimelineCreateScreen,
         navigationOptions: {
-          title: 'New Timeline'
+          title: 'New Timeline',
+          headerTintColor: '#FFF',
+          headerStyle: {
+            backgroundColor: '#3498db'
+          },
+          color: '#000',
         }
       },
       TimelineAddImage: {
         screen: TimelineAddImageScreen,
         navigationOptions: {
-          title: 'New Timeline Image'
+          title: 'New Timeline Image',
+          headerTintColor: '#FFF',
+          headerStyle: {
+            backgroundColor: '#3498db'
+          },
+          color: '#000',
         }
       },
       TimelineListAll: {
         screen: TimelineListAllScreen,
         navigationOptions: {
-          title: 'Timelines'
+          title: 'Timelines',
+          headerTintColor: '#FFF',
+          headerStyle: {
+            backgroundColor: '#3498db'
+          },
+          color: '#000',
         }
       },
-      TimelineListAllCards:{
+      TimelineListAllCards: {
         screen: TimelineListAllCardsScreen,
         navigationOptions: {
-          title: 'Timeline Cards'
+          navigationOptions: {
+            title: 'Timeline Cards',
+            headerTintColor: '#FFF',
+            headerStyle: {
+              backgroundColor: '#3498db'
+            },
+            color: '#000',
+          }
         }
       },
       ProfileEditDetails: {
@@ -95,13 +132,27 @@ const switchNavigator = createSwitchNavigator({
           title: 'Edit Profile'
         }
       },
-      CardsCreate:{
+      CardsCreate: {
         screen: CardsCreateScreen,
-        title: 'Create New Card'
+        navigationOptions: {
+          title: 'Create new Card',
+          headerTintColor: '#FFF',
+          headerStyle: {
+            backgroundColor: '#3498db'
+          },
+          color: '#000',
+        }
       },
-      TimelineEditCard : {
+      TimelineEditCard: {
         screen: TimelineEditCardScreen,
-        title: 'Edit Card'
+        navigationOptions: {
+          title: 'Edit Card',
+          headerTintColor: '#FFF',
+          headerStyle: {
+            backgroundColor: '#3498db'
+          },
+          color: '#000',
+        }
       },
     }, {
       navigationOptions: {

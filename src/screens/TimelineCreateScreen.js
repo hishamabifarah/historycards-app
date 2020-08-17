@@ -16,11 +16,11 @@ const TimelineCreateScreen = () => {
 
     const checkInput = () => {
         if(title.trim().length === 0){ 
-            Alert.alert('Please Enter Title');
+            Alert.alert('Missing Data' , 'Please Enter Title');
         }else if(description.trim().length === 0){
-            Alert.alert('Please Enter Description');
+            Alert.alert('Missing Data', 'Please Enter Description');
         }else{
-            addNewTimeline({ title, description });
+            addNewTimeline({ title, description  });
         }
     }
 

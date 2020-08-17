@@ -285,6 +285,36 @@ const timelineReducer = (state, action) => {
             }
         }
 
+        case 'LIKE_TIMELINE_CARD': {
+            if(action.payload === 'err like card'){
+                return {
+                    ...state,
+                    errorLikeCards: action.payload
+                }
+            }else{
+                if(action.payload === ''){
+                    return {
+                        ...state,
+                        errorLikeCards: 'Rating limit (2) exceeded'
+                    }
+                }
+            }
+
+            let index = state.timeline.cards.findIndex(x => x.cardId === action.payload.cardId);
+
+            state.timeline.cards[index].likeCount = action.payload.likeCount
+            state.timeline.cards[index].dislikeCount = action.payload.dislikeCount;
+
+            return {
+                ...state,
+                timeline: {
+                    ...state.timeline,
+                    cards: [...state.timeline.cards],
+                },
+                errorLikeCards : ''
+            }
+        }
+
         default:
             return state;
     }
@@ -415,6 +445,7 @@ const getTimelineCards = dispatch => async (id, page) => {
 // Add New Timeline
 const addNewTimeline = dispatch => async ({ title, description }) => {
     console.log('addNEwTimeline Called');
+
     dispatch({ type: 'LOADING_DATA_UI' })
     const token = await AsyncStorage.getItem('token');
 
@@ -436,11 +467,12 @@ const addNewTimeline = dispatch => async ({ title, description }) => {
             payload: response.data.resTimeline
         })
 
-        navigate('TimelineAddImage', {
-            title: response.data.resTimeline.title,
-            description: response.data.resTimeline.description,
-            id: response.data.resTimeline.timelineId
-        });
+        // navigate('TimelineAddImage', {
+        //     title: response.data.resTimeline.title,
+        //     description: response.data.resTimeline.description,
+        //     id: response.data.resTimeline.timelineId
+        // });
+        navigate('TimelinesHome');
 
     } catch (err) {
         dispatch({
@@ -533,7 +565,6 @@ const likeTimeline = dispatch => async ({ timelineId }) => {
 
 // Unlike a timeline
 const unlikeTimeline = dispatch => async ({ timelineId }) => {
-    console.log('unlike timeline id', timelineId);
     try {
         const token = await AsyncStorage.getItem('token');
         const res = await historyCardsApi.get(`/timeline/${timelineId}/unlike`, {
@@ -558,7 +589,7 @@ const favoriteTimeline = dispatch => async ({ timelineId }) => {
     // console.log('favorite timeline id' , timelineId);
     try {
         const token = await AsyncStorage.getItem('token');
-        const res = await axios.post(`http://europe-west1-historycards-a64e0.cloudfunctions.net/api/timeline/${timelineId}/favorite`, {
+        const res = await historyCardsApi.post(`/timeline/${timelineId}/favorite`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -745,13 +776,39 @@ const deleteTimelineCard = dispatch => async ({ timelineId, cardId }) => {
     }
 };
 
+// Like timeline Card
+ const likeTimelineCard = dispatch => async ({timelineId, cardId}) => {
+     console.log('card and timeline' , cardId + ' - '  + timelineId);
+    try {
+        const token = await AsyncStorage.getItem('token');
+        const res = await historyCardsApi.post(`/timeline/${timelineId}/card/${cardId}/like/1`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        dispatch({
+            type: 'LIKE_TIMELINE_CARD',
+            payload: res.data
+        });
+
+        // if (res.data !== '') {
+        //     dispatch(getTimelineRatings(timelineId));
+        // }
+
+    } catch (err) {
+        console.log('err like timeline ', err)
+    }
+};
+
 export const { Provider, Context } = createDataContext(
     timelineReducer,
     {
         getTimelines, getTimelineCards, getTimelineFavorites,
         addNewTimeline, uploadImageTimeline, getRecentActivities, getTimelineById,
         likeTimeline, unlikeTimeline, favoriteTimeline, unfavoriteTimeline, deleteTimeline, editTimeline,
-        addTimelineCard, deleteTimelineCard, editTimelineCard , clearErrorMessage
+        addTimelineCard, deleteTimelineCard, editTimelineCard , clearErrorMessage,
+        likeTimelineCard
     },
     {
         errors: [],

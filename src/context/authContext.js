@@ -53,8 +53,6 @@ const authReducer = (state, action) => {
 };
 
 const clearLikes = dispatch => ({ id, handle }) => {
-    console.log('clear likes id and handle', id + ' - ' + handle);
-
     const payload2 = {
         "id": id,
         "handle": handle
@@ -65,8 +63,7 @@ const clearLikes = dispatch => ({ id, handle }) => {
     })
 }
 
-const clearUnLikes = dispatch => ( id ) => {
-    console.log('clear unlikes id ', id );
+const clearUnlikes = (dispatch) => ({ id  }) => {
     const payload2 = {
         "id": id
     }
@@ -316,7 +313,7 @@ export const { Provider, Context } = createDataContext(
     authReducer,
     {
         signin, signout, signup, clearErrorMessage, tryLocalSignin,
-        tryLocalProfile, updateUserDetails, markNotificationsRead, clearLikes, clearUnLikes
+        tryLocalProfile, updateUserDetails, markNotificationsRead, clearLikes, clearUnlikes
     },
     {
         errors: [],

@@ -97,7 +97,7 @@ const TimelinesCardsList = ({ result, navigation }) => {
                         </Left>
 
                         <View style={styles.right}>
-                            <FavoriteTimelineButton style={styles.favorite} timelineId={result.timelineId} />
+                            {/* <FavoriteTimelineButton style={styles.favorite} timelineId={result.timelineId} /> */}
                             {/* <Text onPress={() =>
                                     navigation.navigate('TimelineDetail',
                                         {
