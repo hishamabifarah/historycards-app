@@ -15,15 +15,16 @@
 ✔ 15. light status bar throught application @done (8/1/2020, 4:41:33 PM)
 ✔ 16. Final test for auth route, login signup logout , check tokens and flow on sign in and esp. sign up @done (8/8/2020, 5:07:52 PM)
 ✔ 17. disable create and edit timelines buttons on loading @done (8/1/2020, 6:20:46 PM)
-☐ 18. fix image not uploading when creating new timeline
-☐ 19. disable buttons on uploading image when uploading timeline image
-☐ 20. add editing image when editing timeline
+✘ 18. fix image not uploading when creating new timeline @cancelled (8/17/2020, 6:04:21 PM)
+✘ 19. disable buttons on uploading image when uploading timeline image @cancelled (8/17/2020, 6:04:18 PM)
+✘ 20. add editing image when editing timeline @cancelled (8/17/2020, 6:04:12 PM)
 ✔ 21. Finish loading timeline details with cards @done (8/11/2020, 4:18:16 PM)
 ✔ 22. Implement add card to timeline @done (8/8/2020, 5:07:25 PM)
 ✔ 23. Implement edit and delete card of timeline @done (8/11/2020, 6:26:27 PM)
-☐ 24. Implement like and dislike card
+✘ 24. Implement like and dislike card @cancelled (8/17/2020, 6:04:05 PM)
 ☐ 25. if timeline has no cards on click of edit cards , return
 ☐ 26. card dates are not by order bug
-☐ 27. get card date (format it) into card edit screen and finalize editing it
-☐ 28. LikeTimelineButton get handle from state
+✔ 27. get card date (format it) into card edit screen and finalize editing it @done (8/17/2020, 6:03:52 PM)
+✔ 28. LikeTimelineButton get handle from state @done (8/17/2020, 6:03:50 PM)
 ☐ 29. editTimeline() handle error dispatch 
+☐ 30. use no image from assets not url in all places (ResultsDetail.js is one)

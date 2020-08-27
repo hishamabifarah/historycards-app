@@ -15,6 +15,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import { theme } from '../constants';
 import Spacer from '../elements/Spacer';
 const { width: WIDTH } = Dimensions.get('window');
+import noImage from '../../assets/images/no-image.jpg';
 
 const TimelineDetailScreenByID = ({ navigation }) => {
 
@@ -65,12 +66,9 @@ const TimelineDetailScreenByID = ({ navigation }) => {
         ),
     });
 
-    // get one from assets
-    const noImageUri = 'https://pianomaster.ie/wp-content/uploads/2019/04/no-image.jpg';
-
     const image = state.timeline.imageUrl
         ? <Image style={styles.image} source={{ uri: state.timeline.imageUrl }} />
-        : <Image style={styles.image} source={{ uri: noImageUri }} />
+        : <Image style={styles.image} source={{ uri: noImage }} />
 
     return (
 

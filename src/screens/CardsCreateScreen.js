@@ -40,7 +40,7 @@ const CardsCreateScreen = ({ navigation }) => {
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <View style={styles.loginScreenContainer}>
                     <View style={styles.loginFormView}>
-                        <Text style={styles.logoText}>Create New Timeline</Text>
+                        <Text style={styles.logoText}>Create New Card</Text>
                         <TextInput
                             placeholder="Title"
                             placeholdercolor="#c4c3cb"
