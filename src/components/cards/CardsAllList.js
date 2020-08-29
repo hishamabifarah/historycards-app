@@ -3,7 +3,7 @@ import { FlatList, View } from 'react-native';
 import CardsList from './CardsList';
 
 const CardsAllList = ({ cards }) => {
-    if (!cards && !cards.length) {
+    if (!cards) {
         return null;
     }
 

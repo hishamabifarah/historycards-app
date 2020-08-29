@@ -1,5 +1,6 @@
 // REACT
-import React from 'react';
+// import React from 'react';
+import React, { useState } from "react";
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
@@ -72,7 +73,7 @@ const switchNavigator = createSwitchNavigator({
       TimelineDetailScreenByID: {
         screen: TimelineDetailScreenByID,
         navigationOptions: {
-          title: 'Timeline Detail',
+          title: 'Timeline Details',
           headerTintColor: '#FFF',
           headerStyle: {
             backgroundColor: '#3498db'
@@ -115,7 +116,6 @@ const switchNavigator = createSwitchNavigator({
       },
       TimelineListAllCards: {
         screen: TimelineListAllCardsScreen,
-        navigationOptions: {
           navigationOptions: {
             title: 'Timeline Cards',
             headerTintColor: '#FFF',
@@ -124,7 +124,6 @@ const switchNavigator = createSwitchNavigator({
             },
             color: '#000',
           }
-        }
       },
       ProfileEditDetails: {
         screen: ProfileEditDetailsScreen,
@@ -185,15 +184,35 @@ const switchNavigator = createSwitchNavigator({
 
 const App = createAppContainer(switchNavigator);
 
-export default () => {
-  let [fontsLoaded] = useFonts({
+const fetchFonts = () => {
+  return Font.loadAsync({
     Roboto: require('native-base/Fonts/Roboto.ttf'),
     Roboto_medium: require('native-base/Fonts/Roboto_medium.ttf'),
     ...Ionicons.font,
   });
-  if (!fontsLoaded) {
-    return <AppLoading />;
-  } else {
+ };
+
+export default () => {
+  const [fontLoaded, setFontLoaded] = useState(false);
+  // let [fontsLoaded] = useFonts({
+  //   // Roboto: require('native-base/Fonts/Roboto.ttf'),
+  //   // Roboto_medium: require('native-base/Fonts/Roboto_medium.ttf'),
+  //   // ...Ionicons.font,
+  // });
+  // if (!fontsLoaded) {
+  //   return <AppLoading />;
+  // } else {
+    if (!fontLoaded) {
+      return (
+        <AppLoading
+          startAsync={fetchFonts}
+          onFinish={() => {
+            setFontLoaded(true);
+          }}
+        />
+      );
+    }
+
     return (
       <TimelineProvider>
         <AuthProvider>
@@ -206,4 +225,4 @@ export default () => {
       </TimelineProvider>
     );
   }
-};
+// };

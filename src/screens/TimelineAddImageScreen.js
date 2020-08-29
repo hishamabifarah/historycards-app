@@ -3,7 +3,7 @@ import { Image, StyleSheet, Text, TouchableOpacity, ScrollView, ActivityIndicato
 import * as ImagePicker from 'expo-image-picker';
 import { Context as TimelineContext } from "../context/timelinesContext";
 import { NavigationEvents } from 'react-navigation';
-import noImage from '../../assets/images/no-image.jpg';
+
 
 const TimelineAddImage = ({ navigation }) => {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -78,7 +78,7 @@ const TimelineAddImage = ({ navigation }) => {
   } else {
     return (
       <ScrollView style={styles.container}>
-        <Image source={{ uri: noImage }} style={styles.logo} />
+        <Image source={{ uri: '../../assets/images/no-image.jpg' }} style={styles.logo} />
         <Text style={styles.instructions}>
           Add Image to Timeline?
             </Text>

@@ -1,7 +1,6 @@
 // React Native
 import React, { useContext, useEffect, useState } from 'react'
 import { Text, StyleSheet, ScrollView, Image, Dimensions, View, ActivityIndicator, TouchableOpacity } from 'react-native';
-import { NavigationEvents } from 'react-navigation';
 import { Context as TimelineContext } from "../context/timelinesContext";
 import Timeline from 'react-native-timeline-flatlist';
 // Components
@@ -15,7 +14,6 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import { theme } from '../constants';
 import Spacer from '../elements/Spacer';
 const { width: WIDTH } = Dimensions.get('window');
-import noImage from '../../assets/images/no-image.jpg';
 
 const TimelineDetailScreenByID = ({ navigation }) => {
 
@@ -25,7 +23,7 @@ const TimelineDetailScreenByID = ({ navigation }) => {
     dayjs.extend(relativeTime);
 
     const [page, setPage] = useState(state.page)
-
+    const noImageUri = 'https://pianomaster.ie/wp-content/uploads/2019/04/no-image.jpg';
     useEffect(() => {
         getTimelineById(id, page);
     }, []);
@@ -68,7 +66,7 @@ const TimelineDetailScreenByID = ({ navigation }) => {
 
     const image = state.timeline.imageUrl
         ? <Image style={styles.image} source={{ uri: state.timeline.imageUrl }} />
-        : <Image style={styles.image} source={{ uri: noImage }} />
+        : <Image style={styles.image} source={{ uri: noImageUri }} />
 
     return (
 

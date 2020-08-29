@@ -1,9 +1,8 @@
 // React Native
 import React, { useContext, useEffect, useState } from 'react'
-import { Text, StyleSheet, ScrollView, Image, Dimensions, View, ActivityIndicator, TouchableOpacity } from 'react-native';
-// import { NavigationEvents } from 'react-navigation';
+import { Text, StyleSheet, ScrollView,  Dimensions, View, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { Context as TimelineContext } from "../context/timelinesContext";
-// Components
+
 // dayjs
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -38,15 +37,6 @@ const TimelineListAllCardsScreen = ({ navigation }) => {
         getTimelineById(id, page);
     }
 
-    TimelineListAllCardsScreen.navigationOptions = () => ({
-        title: 'Timeline Details',
-        headerTintColor: '#FFF',
-        headerStyle: {
-            backgroundColor: '#3498db'
-        },
-        color: '#000'
-    });
-
     return (
 
         <ScrollView>
@@ -54,9 +44,7 @@ const TimelineListAllCardsScreen = ({ navigation }) => {
                 ? <ActivityIndicator style={{ paddingTop: 15 }} size="large" color="#00bcd4" />
                 : (
                     <View>
-                        {/* <Text style={styles.title}>Cards</Text> */}
                         <CardsAllList cards={state.timeline.cards} />
-
                     </View>
                 )
             }

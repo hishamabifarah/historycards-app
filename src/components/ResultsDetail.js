@@ -2,15 +2,16 @@ import React from 'react';
 import { View, Image, Text, StyleSheet, Dimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import StarRating from 'react-native-star-rating';
-import noImage from '../../assets/images/no-image.jpg';
 
 const { width: WIDTH } = Dimensions.get('window');
 
 const ResultsDetail = ({ result }) => {
 
+    const noImageUri = 'https://pianomaster.ie/wp-content/uploads/2019/04/no-image.jpg';
     const image = result.imageUrl
         ? <Image style={styles.image} source={{ uri: result.imageUrl }} />
-        : <Image style={styles.image} source={{ uri: noImage }} />
+        : <Image style={styles.image} source={{ uri: noImageUri }} />
+        
     return (
         <View style={styles.container}>
             <View>
