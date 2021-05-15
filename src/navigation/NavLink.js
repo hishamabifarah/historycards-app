@@ -3,7 +3,7 @@ import { Text, TouchableOpacity, StyleSheet } from 'react-native'
 import Spacer from '../elements/Spacer';
 import { withNavigation } from 'react-navigation';
 
-const NavLink = ({navigation, text , routeName}) => {
+const NavLink = ({ navigation, text, routeName }) => {
     return (
         <TouchableOpacity onPress={() => navigation.navigate(routeName)}>
             <Spacer margin={15}>
@@ -14,7 +14,7 @@ const NavLink = ({navigation, text , routeName}) => {
 };
 
 const styles = StyleSheet.create({
-    link:{
+    link: {
         color: 'white'
     }
 });

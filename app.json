@@ -26,7 +26,8 @@
     },
     "android": {
       "package": "com.hishamabifarah.historycards",
-      "versionCode": 1
+      "versionCode": 3,
+      "permissions" : []
     }
   }
 }

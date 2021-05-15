@@ -1,10 +1,10 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity , SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { withNavigation } from 'react-navigation'
 import RecentActivitiesListDetails from './RecentActivitiesListDetails';
 
 
-const RecentActivitiesList = ({ title, activities, navigation }) => {
+const RecentActivitiesList = ({ title, activities }) => {
 
     if (!activities) {
         return null;
@@ -27,9 +27,6 @@ const RecentActivitiesList = ({ title, activities, navigation }) => {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        // marginBottom: 10,
-    },
     title: {
         fontSize: 18,
         fontWeight: 'bold',
